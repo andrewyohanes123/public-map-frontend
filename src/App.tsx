@@ -1,25 +1,89 @@
-import React from 'react';
-import logo from './logo.svg';
+import { FC, ReactElement, useContext, useCallback, useEffect, useState } from 'react';
+import AuthProvider from '@edgarjeremy/sirius.adapter/dist/libs/AuthProvider';
+import Sirius, { IModelFactory } from '@edgarjeremy/sirius.adapter'
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { MainPage } from './pages/MainPage';
+import moment from 'moment';
+import { ModelsContext, ModelsContextAttributes } from './contexts/ModelsContext';
+import { UserContext, UserAttributes, UserContextAttributes } from './contexts/UserContext';
 import './App.css';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { MapInstanceProvider } from './contexts/MapInstanceContext';
 
-function App() {
+const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
+const Adapter = new Sirius(REACT_APP_IP_ADDRESS!, parseInt(REACT_APP_PORT!), localStorage);
+
+const App: FC = (): ReactElement => {
+  moment.locale('id');
+  const [localModels, setLocalModels] = useState<IModelFactory | {}>({});
+  const [loading, toggleLoading] = useState<boolean>(true);
+  const [error, toggleError] = useState<boolean>(false);
+  const { setModels } = useContext<ModelsContextAttributes>(ModelsContext);
+  const { setAuth, setLogin, setLogout, auth } = useContext<UserContextAttributes>(UserContext);
+
+  document.title = "Public Map"
+
+  const connect = useCallback(() => {
+    toggleLoading(true);
+    Adapter.connect().then(models => {
+      setLocalModels(models);
+      toggleError(false);
+      console.log('connect')
+    }).catch(e => {
+      console.log(e);
+      toggleError(true);
+      document.title = "Oops... terjadi kesalahan. Silakan coba lagi"
+    })
+  }, [toggleError, setLocalModels]);
+
+  useEffect(() => {
+    connect();
+  }, [connect]);
+  // eslint-disable-next-line
+  useEffect(() => {
+    if (typeof auth !== 'undefined') {
+      Adapter.getAuthProvider().get().then((user: UserAttributes): void => {
+        setLogin!(user)
+        toggleLoading(false);
+      }).catch(e => {
+        console.log(e)
+        setLogout!();
+        toggleLoading(false);
+      })
+    }
+    // eslint-disable-next-line
+  }, [auth])
+
+  useEffect(() => {
+    if (Object.keys(localModels).length > 0) {
+      setModels!(localModels);
+      const auth: AuthProvider = Adapter.getAuthProvider();
+      setAuth!(auth);
+    }
+    // eslint-disable-next-line
+  }, [localModels]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    loading ?
+      <div className="centered-items">
+        <ProgressSpinner />
+        <h4 style={{ display: 'block' }}>Loading</h4>
+        <p style={{ display: 'block' }}>Menghubungkan aplikasi ke server</p>
+      </div>
+      :
+      error ?
+        <div>
+          <h4>Terjadi kesalahan</h4>
+        </div>
+        :
+        <MapInstanceProvider>
+          <div>
+            <MainPage />
+          </div>
+        </MapInstanceProvider>
   );
 }
 

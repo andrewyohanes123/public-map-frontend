@@ -1,13 +1,20 @@
-import React from 'react';
+// import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { GlobalModelsProvider } from './contexts/ModelsContext';
+import { UserProvider } from './contexts/UserContext';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <GlobalModelsProvider>
+    <UserProvider>
+      <App />
+    </UserProvider>
+  </GlobalModelsProvider>
+  // {/* </React.StrictMode> */}
+  ,
   document.getElementById('root')
 );
 
