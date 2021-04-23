@@ -2,19 +2,27 @@ import { FC, ReactElement, useContext, useCallback, useEffect, useState } from '
 import AuthProvider from '@edgarjeremy/sirius.adapter/dist/libs/AuthProvider';
 import Sirius, { IModelFactory } from '@edgarjeremy/sirius.adapter'
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { MainPage } from './pages/MainPage';
+import { HashRouter, Route, Switch } from 'react-router-dom'
+import Primereact from 'primereact/api'
 import moment from 'moment';
+import { MainPage } from './pages/MainPage';
 import { ModelsContext, ModelsContextAttributes } from './contexts/ModelsContext';
 import { UserContext, UserAttributes, UserContextAttributes } from './contexts/UserContext';
-import './App.css';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapInstanceProvider } from './contexts/MapInstanceContext';
+import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
+import { MapDashboard } from './pages/MapDashboard';
+import './App.css';
+import 'primereact/resources/themes/arya-blue/theme.css';
+import 'primeicons/primeicons.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeflex/primeflex.css'
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 const Adapter = new Sirius(REACT_APP_IP_ADDRESS!, parseInt(REACT_APP_PORT!), localStorage);
+
+Primereact.ripple = false;
 
 const App: FC = (): ReactElement => {
   moment.locale('id');
@@ -22,7 +30,7 @@ const App: FC = (): ReactElement => {
   const [loading, toggleLoading] = useState<boolean>(true);
   const [error, toggleError] = useState<boolean>(false);
   const { setModels } = useContext<ModelsContextAttributes>(ModelsContext);
-  const { setAuth, setLogin, setLogout, auth } = useContext<UserContextAttributes>(UserContext);
+  const { setAuth, setLogin, setLogout, auth, user } = useContext<UserContextAttributes>(UserContext);
 
   document.title = "Public Map"
 
@@ -55,7 +63,7 @@ const App: FC = (): ReactElement => {
       })
     }
     // eslint-disable-next-line
-  }, [auth])
+  }, [auth]);
 
   useEffect(() => {
     if (Object.keys(localModels).length > 0) {
@@ -80,9 +88,18 @@ const App: FC = (): ReactElement => {
         </div>
         :
         <MapInstanceProvider>
-          <div>
-            <MainPage />
-          </div>
+          <HashRouter>
+            <Switch>
+              <Route exact path="/" component={MainPage} />
+              <Route exact path="/login" component={Login} />
+              <Route path="/dashboard" component={
+                user?.type === 'Administrator' ?
+                  Dashboard
+                  :
+                  MapDashboard
+              } />
+            </Switch>
+          </HashRouter>
         </MapInstanceProvider>
   );
 }
