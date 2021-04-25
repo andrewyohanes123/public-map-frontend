@@ -7,6 +7,7 @@ import { Point } from '../types/Types'
 import { UserContext } from '../contexts/UserContext'
 import { PointCard } from '../components/PointCard'
 import { useHistory } from 'react-router'
+import { UserPoints } from '../components/UserPoints'
 
 export const Points: FC = (): ReactElement => {
   const [points, setPoints] = useState<{ rows: Point[], count: number }>({ rows: [], count: 0 });
@@ -49,6 +50,7 @@ export const Points: FC = (): ReactElement => {
 
   return (
     <div style={{ height: 'calc(100%)' }}>
+      <UserPoints />
       <Toast ref={toast} />
       <div className="p-p-3" style={{ borderBottom: '1px solid var(--surface-800)' }}>
         <span className="p-input-icon-right p-d-block p-fluid p-mb-3">

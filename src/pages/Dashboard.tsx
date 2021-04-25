@@ -66,17 +66,17 @@ export const Dashboard: FC = (): ReactElement => {
               </div>
             </div>
           }
-          className={user.type === 'Administrator' ? "h-100" : ''}
+          className={user.type === 'Administrator' ? "h-100 overflow-hidden" : ''}
         >
           {
             user.type === 'Administrator' &&
-            <>
+            <div style={{ height: 'calc(100%)', overflow: 'hidden' }}>
               <TabMenu activeItem={menuItems.find(item => item.target === pathname)} onTabChange={navigate} model={menuItems} />
               <Suspense fallback={<></>}>
                 <Route path={`${path}/pengguna`} component={Users} />
                 <Route path={`${path}/tipe-point`} component={TypesPage} />
               </Suspense>
-            </>
+            </div>
           }
           {
             user.type === 'Contributor' &&
