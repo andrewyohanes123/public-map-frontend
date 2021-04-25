@@ -41,7 +41,7 @@ export const Points: FC = (): ReactElement => {
     }).catch(e => {
       toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
     })
-  }, [toast, Point]);
+  }, [toast, Point, user]);
 
   useEffect(() => {
     getPoints();

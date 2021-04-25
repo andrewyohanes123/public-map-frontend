@@ -11,9 +11,7 @@ import { Toast } from 'primereact/toast'
 import { Dropdown } from 'primereact/dropdown'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { MapInstance } from '../contexts/MapInstanceContext'
-import { Points } from './Points'
 import { UserContext } from '../contexts/UserContext'
-import { number } from 'yup/lib/locale'
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Masukkan nama lokasi'),
@@ -24,12 +22,12 @@ const validationSchema = yup.object().shape({
 const initialValues = { name: '', type_id: undefined, description: '' };
 
 export interface AddPointProps {
-  onSubmit: (val: typeof initialValues, cb: () => void) => void;
+  // onSubmit: (val: typeof initialValues, cb: () => void) => void;
 }
 
-export const AddPoint: FC<AddPointProps> = ({ }): ReactElement => {
+export const AddPoint: FC<AddPointProps> = (): ReactElement => {
   const [loading, toggleLoading] = useState<boolean>(false);
-  const [coords, setCoords] = useState<[number, number]>([0, 0]);
+  const [coords, setCoords] = useState<[number, number]>([3, 3]);
   const [types, setTypes] = useState<Type[]>([]);
   const { models } = useContext(ModelsContext);
   const { map } = useContext(MapInstance);
@@ -51,7 +49,7 @@ export const AddPoint: FC<AddPointProps> = ({ }): ReactElement => {
     }).catch(e => {
       toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
     });
-  }, [Point, user, coords]);
+  }, [Point, user, coords, push]);
 
   const getTypes = useCallback(() => {
     Type.collection({

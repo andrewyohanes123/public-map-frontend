@@ -29,7 +29,7 @@ export const PublicPoints: FC = (): ReactElement => {
     }).catch(e => {
       toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
     })
-  }, []);
+  }, [Point]);
 
   const getTypes = useCallback(() => {
     Type.collection({

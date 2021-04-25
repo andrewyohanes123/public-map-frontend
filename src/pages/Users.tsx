@@ -13,19 +13,18 @@ const AddUser = lazy(() => import('../components/AddUser').then(m => ({ default:
 export const Users: FC = (): ReactElement => {
   const [addUser, toggleAddUser] = useState<boolean>(false);
   const [users, setUsers] = useState<{ count: number; rows: User[] }>({ rows: [], count: 0 });
-  const [page, setPage] = useState<number>(1);
-  const [limit] = useState<number>(2);
+  const [page, setPage] = useState<number>(0);
+  const [limit] = useState<number>(10);
   const [loading, toggleLoading] = useState<boolean>(true);
   const { models } = useContext(ModelsContext);
   const { User } = models!;
   const toast = useRef<Toast>(null);
 
+  document.title = "Dashboard - Pengguna"
+
   const getUsers = useCallback(() => {
     toggleLoading(true);
-    const offset = ((page <= 0 ? 1 : page) - 1) * limit;
     User.collection({
-      offset,
-      limit,
       attributes: ['name', 'username', 'type'],
     }).then(resp => {
       toggleLoading(false);
@@ -34,7 +33,7 @@ export const Users: FC = (): ReactElement => {
       toggleLoading(false);
       toast.current?.show({ severity: 'error', summary: 'Terjadi kesalahan', detail: e.toString(), life: 3000 });
     })
-  }, [User, limit, page, toast]);
+  }, [User, toast]);
 
   const createUsers = useCallback((values: any, cb: () => void) => {
     User.create(values).then(resp => {
@@ -50,7 +49,7 @@ export const Users: FC = (): ReactElement => {
   useEffect(() => {
     getUsers();
     // eslint-desable-next-line
-  }, [page, limit, getUsers]);
+  }, [getUsers]);
 
   const actionBody = useCallback((row: User): ReactElement => (
     <>
@@ -71,12 +70,12 @@ export const Users: FC = (): ReactElement => {
       </Suspense>
       <DataTable
         value={users.rows}
-        rows={10}
+        rows={limit}
         paginator
         emptyMessage="Belum ada pengguna"
-        // first={page}
-        // onPage={e => setPage(e.first)}
-        // totalRecords={users.count}
+        first={page}
+        onPage={e => setPage(e.first)}
+        totalRecords={users.count}
         loading={loading}
       >
         <Column field="name" header="Nama Lengkap" />

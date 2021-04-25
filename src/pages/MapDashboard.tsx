@@ -1,5 +1,5 @@
 import { FC, ReactElement, useContext, useCallback, lazy, Suspense, useRef, useState } from 'react'
-import { useRouteMatch, useHistory, Route, Redirect } from 'react-router-dom'
+import { useRouteMatch, Route, Redirect } from 'react-router-dom'
 import { Menubar } from 'primereact/menubar'
 import { Toast } from 'primereact/toast'
 import { Button } from 'primereact/button'
@@ -13,8 +13,6 @@ const PointDetail = lazy(() => import('./PointDetail').then(m => ({ default: m.P
 export const MapDashboard: FC = (): ReactElement => {
   const { user, login, setLogout, auth } = useContext(UserContext);
   const { path } = useRouteMatch();
-  // const { pathname } = useLocation();
-  const { push } = useHistory();
   const toast = useRef<Toast>(null);
   const [loading, toggleLoading] = useState<boolean>(false);
 
