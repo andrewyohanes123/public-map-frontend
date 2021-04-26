@@ -16,6 +16,8 @@ export const MapDashboard: FC = (): ReactElement => {
   const toast = useRef<Toast>(null);
   const [loading, toggleLoading] = useState<boolean>(false);
 
+  document.title = `Dashboard`
+
   const logout = useCallback(() => {
     toggleLoading(true);
     auth?.remove().then(resp => {

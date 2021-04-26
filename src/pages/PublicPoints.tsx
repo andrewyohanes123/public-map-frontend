@@ -20,7 +20,7 @@ export const PublicPoints: FC = (): ReactElement => {
 
   const getPoints = useCallback(() => {
     Point.collection({
-      attributes: ['name', 'longitude', 'latitude', 'description'],
+      attributes: ['name', 'longitude', 'latitude', 'description', 'type_id'],
       include: [
         { model: 'Type', attributes: ['name', 'color', 'icon'] }
       ]
@@ -33,7 +33,7 @@ export const PublicPoints: FC = (): ReactElement => {
 
   const getTypes = useCallback(() => {
     Type.collection({
-      attributes: ['name', 'icon', 'color', 'id']
+      attributes: ['name', 'icon', 'color', 'id',]
     }).then(resp => {
       setTypes(resp.rows as Type[]);
     }).catch(e => {
@@ -97,7 +97,7 @@ export const PublicPoints: FC = (): ReactElement => {
               },
               properties: {
                 title: point.name,
-                icon: `icon-image${point.id}`
+                icon: `icon-image${point.type_id}`
               }
             }))
           }
@@ -109,7 +109,9 @@ export const PublicPoints: FC = (): ReactElement => {
           source: 'points',
           layout: {
             'icon-image': ['get','icon'],
-            'icon-size': 0.30
+            'icon-size': 0.30,
+            'icon-offset': [0, 25],
+            'icon-anchor': 'bottom'
             // 'text-field': ['get', 'title'],
             // 'text-offset': [0, 1.25],
             // 'text-anchor': 'bottom',

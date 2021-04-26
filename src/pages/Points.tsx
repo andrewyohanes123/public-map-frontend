@@ -73,7 +73,7 @@ export const Points: FC = (): ReactElement => {
               :
               points.rows.length > 0 ?
                 points.rows.map(point => (
-                  <PointCard key={point.id} point={point } />
+                  <PointCard key={point.id} point={point} />
                 ))
                 :
                 <div className="p-mt-3 p-text-center" style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: 'calc(100% - 20px)' }}>

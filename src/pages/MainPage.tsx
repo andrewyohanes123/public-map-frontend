@@ -4,6 +4,7 @@ import Mapbox, { ZoomControl, ScaleControl } from 'react-mapbox-gl'
 import { useLocation } from 'react-router-dom'
 import { MapInstance } from '../contexts/MapInstanceContext';
 import { PublicPoints } from './PublicPoints';
+import { SearchButton } from '../components/SearchButton';
 
 const Map = Mapbox({
   accessToken: 'pk.eyJ1IjoiYW5kcmV3eW9oYW5lcyIsImEiOiJjamxsc2c3MnQweHRuM2tsMXowNXR5ZTQ5In0.H6o00Jv2W2pfGbiY7BK7Yw',
@@ -99,7 +100,11 @@ export const MainPage: FC = (): ReactElement => {
         <ZoomControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
       </Map>
-      {pathname === '/' && <PublicPoints />}
+      {pathname === '/' &&
+        <>
+          <SearchButton />
+          <PublicPoints />
+        </>}
     </>
   )
 }

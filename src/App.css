@@ -28,3 +28,37 @@ h1, h2, h3, h4, h5, h6, span, p {
   height: calc(100% - 16px);
   overflow: hidden;
 }
+
+.search-container {
+  width: 400px;
+  position: fixed;
+  z-index: 1000;
+  top: 15px;
+  left: 15px;
+  color: var(--text-color);
+}
+
+.search-toolbar {
+  background-color: var(--surface-500);
+  border-radius: 8px;
+}
+
+.search-toolbar .search-input-box {
+  padding: 3px;
+}
+
+.search-input-box .search-input {
+  padding: 8px;
+  font-size: 20px;
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  color: var(--text-color);
+  border-radius: 8px;
+  padding-left: 20px;
+  font-weight: normal;
+}
+
+.search-input:focus {
+  outline: none;
+}

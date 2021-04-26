@@ -8,20 +8,19 @@ export interface PointCardProps {
   point: Point;
 }
 
+const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
+
 export const PointCard: FC<PointCardProps> = ({ point }): ReactElement => {
   const { path } = useRouteMatch()
   return (
     <div className="p-shadow-3 p-mb-2" style={{ borderTop: `6px solid ${point.type.color}`, borderRadius: 8, overflow: 'hidden' }}>
-      <Card title={<Link style={{ color: 'white', textDecoration: 'none' }} to={`${path}lokasi/${point.id}`}><h5 className="p-text-normal">{point.name}</h5></Link>}>
-        {point.pictures!.length > 0 ?
-          <></>
-          :
-          <div className="centered-items">
-            <p className="p-text-center ">Tidak ada gambar lokasi</p>
-            <Button icon="pi pi-fw pi-plus" className="p-button-rounded p-button-sm p-button-success p-mt-3 p-button-outlined" />
-            <small className="p-text-center p-mt-2">Tambah Gambar</small>
-          </div>
-        }
+      <Card
+        title={<Link style={{ color: 'white', textDecoration: 'none' }} to={`${path}lokasi/${point.id}`}><h5 className="p-text-normal">{point.name}</h5></Link>}
+        subTitle={point.type.name}
+        header={point.pictures!.length > 0 ? <img src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${point.pictures![0].id}`} /> : undefined}
+      >
+        <Button icon="pi pi-fw pi-pencil" className="p-button-warning p-button-sm p-mr-2" />
+        <Button icon="pi pi-fw pi-trash" className="p-button-danger p-button-sm" />
       </Card>
     </div>
   )
