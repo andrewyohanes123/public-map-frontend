@@ -6,12 +6,14 @@ import { MapInstance } from '../contexts/MapInstanceContext'
 import { ModelsContext } from '../contexts/ModelsContext';
 import { Point, Type } from '../types/Types'
 import { svgColor } from '../modules/SVGColorizer';
+import { SelectedPoint } from '../App';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 
 export const PublicPoints: FC = (): ReactElement => {
   const { map } = useContext(MapInstance);
   const { models } = useContext(ModelsContext);
+  const { setPointId, toggleSidebar } = useContext(SelectedPoint);
   const [points, setPoints] = useState<{ rows: Point[], count: number }>({ rows: [], count: 0 });
   const [types, setTypes] = useState<Type[]>([]);
   const [imageLoaded, toggleImageLoaded] = useState<boolean>(false);
@@ -51,6 +53,7 @@ export const PublicPoints: FC = (): ReactElement => {
     if (types.length > 0 && points.rows.length > 0 && typeof map !== 'undefined') {
       // console.log({ types, points, map })
       types.forEach((type: Type, i: number) => {
+        // const currentImage = map.
         axios.get(`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/icon/${type.id}`).then(resp => {
           // // @ts-ignore
           const image = new Image();
@@ -96,8 +99,9 @@ export const PublicPoints: FC = (): ReactElement => {
                 coordinates: [point.longitude, point.latitude],
               },
               properties: {
-                title: point.name,
-                icon: `icon-image${point.type_id}`
+                name: point.name,
+                icon: `icon-image${point.type_id}`,
+                id: point.id,
               }
             }))
           }
@@ -108,7 +112,7 @@ export const PublicPoints: FC = (): ReactElement => {
           type: 'symbol',
           source: 'points',
           layout: {
-            'icon-image': ['get','icon'],
+            'icon-image': ['get', 'icon'],
             'icon-size': 0.30,
             'icon-offset': [0, 25],
             'icon-anchor': 'bottom'
@@ -118,9 +122,37 @@ export const PublicPoints: FC = (): ReactElement => {
             // 'text-font': ['Arial']
           }
         });
+
+        map.on('mouseenter', 'points', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'points', () => {
+          map.getCanvas().style.cursor = '';
+        });
+
+        map.on('click', 'points', (e) => {
+          // @ts-ignore
+          setPointId(e.features![0].properties.id)
+          map.flyTo({
+            center: e.lngLat,
+          });
+          toggleSidebar(true);
+        })
       }
     }
-  }, [map, imageLoaded, points])
+    return () => {
+      if (typeof map !== 'undefined') {
+        const currentSource = map.getSource('points');
+        const currentLayer = map.getLayer('points');
+        if (typeof currentSource !== 'undefined' && typeof currentLayer !== 'undefined') {
+          map.removeLayer("points");
+          map.removeSource("points");
+        }
+      }
+    }
+  }, [map, imageLoaded, points, setPointId, toggleSidebar])
 
   // useEffect(() => {
   //   if (points.rows.length > 0 && types.length > 0) {

@@ -130,6 +130,12 @@ export const UserPoints: FC = (): ReactElement => {
         });
       }
     }
+    return () => {
+      if (typeof map !== 'undefined') {
+        map.removeLayer("points");
+        map.removeSource("points");
+      }
+    }
   }, [map, imageLoaded, points])
 
   // useEffect(() => {

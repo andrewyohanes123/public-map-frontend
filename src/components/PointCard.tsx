@@ -17,7 +17,7 @@ export const PointCard: FC<PointCardProps> = ({ point }): ReactElement => {
       <Card
         title={<Link style={{ color: 'white', textDecoration: 'none' }} to={`${path}lokasi/${point.id}`}><h5 className="p-text-normal">{point.name}</h5></Link>}
         subTitle={point.type.name}
-        header={point.pictures!.length > 0 ? <img src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${point.pictures![0].id}`} /> : undefined}
+        header={point.pictures!.length > 0 ? <img src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${point.pictures![0].id}`} alt={point.name} /> : undefined}
       >
         <Button icon="pi pi-fw pi-pencil" className="p-button-warning p-button-sm p-mr-2" />
         <Button icon="pi pi-fw pi-trash" className="p-button-danger p-button-sm" />

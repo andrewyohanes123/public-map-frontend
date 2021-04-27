@@ -36,6 +36,7 @@ h1, h2, h3, h4, h5, h6, span, p {
   top: 15px;
   left: 15px;
   color: var(--text-color);
+  height: calc(100% - 30px);
 }
 
 .search-toolbar {
@@ -61,4 +62,20 @@ h1, h2, h3, h4, h5, h6, span, p {
 
 .search-input:focus {
   outline: none;
+}
+
+.category-options {
+  border-radius: 8px;
+}
+
+.category-options:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.sidebar-container {
+  max-height: calc(100% - 150px);
+  border-radius: 8px;
+  overflow: auto;
+  background-color: var(--surface-500);
 }
