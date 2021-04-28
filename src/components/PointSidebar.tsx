@@ -55,7 +55,7 @@ export const PointSidebar: FC = (): ReactElement => {
               <>
               <h4 className="p-mt-2 p-mb-2">{point!.pictures!.length > 1 ? 'Foto - Foto' : 'Foto'}</h4>
               {point?.pictures?.map(picture => (
-                <SidebarCoverImage src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${picture.id}`} />
+                <SidebarCoverImage key={picture.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${picture.id}`} />
               ))}
               </>
             }

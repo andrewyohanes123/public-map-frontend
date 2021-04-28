@@ -143,14 +143,14 @@ export const PublicPoints: FC = (): ReactElement => {
       }
     }
     return () => {
-      if (typeof map !== 'undefined') {
-        const currentSource = map.getSource('points');
-        const currentLayer = map.getLayer('points');
-        if (typeof currentSource !== 'undefined' && typeof currentLayer !== 'undefined') {
-          map.removeLayer("points");
-          map.removeSource("points");
-        }
-      }
+      // if (typeof map !== 'undefined') {
+      //   const currentSource = map.getSource('points');
+      //   const currentLayer = map.getLayer('points');
+      //   if (typeof currentSource !== 'undefined' && typeof currentLayer !== 'undefined') {
+      //     map.removeLayer("points");
+      //     map.removeSource("points");
+      //   }
+      // }
     }
   }, [map, imageLoaded, points, setPointId, toggleSidebar])
 

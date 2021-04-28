@@ -131,7 +131,7 @@ export const PointDetail: FC = (): ReactElement => {
         <div className="p-p-3">
           {
             pictures.map(pic => (
-              <ImagePreviewCard src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${pic.id}`} onRemove={() => console.log(pic)} />
+              <ImagePreviewCard key={pic.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${pic.id}`} onRemove={() => console.log(pic)} />
             ))
           }
         </div>
