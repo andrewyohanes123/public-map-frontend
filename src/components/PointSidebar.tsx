@@ -1,3 +1,4 @@
+import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FC, ReactElement, useContext, useEffect, useCallback, useState } from 'react'
 import { SelectedPoint } from '../App'
@@ -7,7 +8,7 @@ import { SidebarCoverImage } from './SidebarCoverImage';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 export const PointSidebar: FC = (): ReactElement => {
-  const { point_id, sidebar } = useContext(SelectedPoint);
+  const { point_id, sidebar, toggleSidebar } = useContext(SelectedPoint);
   const { models } = useContext(ModelsContext);
   const [point, setPoint] = useState<Point | undefined>();
   const [loading, toggleLoading] = useState<boolean>(true);
@@ -43,7 +44,9 @@ export const PointSidebar: FC = (): ReactElement => {
           </div>
           :
           <div className="p-p-3">
-            {(point!.pictures!.length > 0) && <SidebarCoverImage src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${point?.pictures![0].id}`} />}
+            <Button icon="pi pi-times" onClick={() => {
+              toggleSidebar(false)
+            }} className="p-mb-3 p-button-danger p-button-outlined p-button-sm p-button-rounded" />
             <h3>{point?.name}</h3>
             <p style={{ color: 'var(--text-color-secondary)' }}>{point?.type.name}</p>
             {point?.pictures?.length === 0 ?

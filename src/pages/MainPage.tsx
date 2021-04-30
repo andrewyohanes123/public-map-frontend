@@ -1,4 +1,4 @@
-import { FC, ReactElement, useContext, useRef } from 'react'
+import { FC, ReactElement, useContext, useRef, useMemo } from 'react'
 import { Toast } from 'primereact/toast'
 import Mapbox, { ZoomControl, ScaleControl } from 'react-mapbox-gl'
 import { useLocation } from 'react-router-dom'
@@ -20,6 +20,9 @@ export const MainPage: FC = (): ReactElement => {
   const { pathname } = useLocation();
   const { setMap } = useContext(MapInstance);
   const toast = useRef<Toast>(null);
+
+  const center: [number, number] = useMemo(() => ([125.12217564443125, 1.4406812288395177]), []);
+  const zoom: [number] = useMemo(() => ([13]), []);
 
   // const getSnapshots = useCallback(() => {
   //   Connection.get('/apis/snapshots').then((resp: AxiosResponse) => {
@@ -94,8 +97,8 @@ export const MainPage: FC = (): ReactElement => {
           height: '100%',
           width: '100%',
         }}
-        zoom={[13]}
-        center={[125.12217564443125, 1.4406812288395177]}
+        zoom={zoom}
+        center={center}
         onStyleLoad={(map) => setMap!(map)}
       >
         <ZoomControl position="bottom-right" />

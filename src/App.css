@@ -78,4 +78,41 @@ h1, h2, h3, h4, h5, h6, span, p {
   border-radius: 8px;
   overflow: auto;
   background-color: var(--surface-500);
+  opacity: 0;
+  transform: translateY(50%);
+  animation: show-up 350ms ease-in-out forwards;
+}
+
+.public-point-card {
+  background: var(--surface-600); 
+  color: var(--text-color);
+  border-radius: 8px;
+  transition: all 250ms ease-in-out;
+  cursor: pointer;
+}
+
+.public-point-card p, h3 {
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+.public-point-card:hover {
+  background: var(--surface-700);
+  transition: all 250ms ease-in-out;
+}
+
+@keyframes show-up {
+  10% {
+    opacity: 0.01;
+  }
+  80% {
+    opacity: 0.5;
+    transform: translateY(-2%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
