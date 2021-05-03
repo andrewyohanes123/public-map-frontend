@@ -7,7 +7,7 @@ import { PublicPoints } from './PublicPoints';
 import { SearchButton } from '../components/SearchButton';
 import { UserBadge } from '../components/UserBadge';
 
-const Map = Mapbox({
+export const Map = Mapbox({
   accessToken: 'pk.eyJ1IjoiYW5kcmV3eW9oYW5lcyIsImEiOiJjamxsc2c3MnQweHRuM2tsMXowNXR5ZTQ5In0.H6o00Jv2W2pfGbiY7BK7Yw',
   attributionControl: false,
   logoPosition: 'bottom-left',

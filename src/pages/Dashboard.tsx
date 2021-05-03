@@ -9,6 +9,7 @@ import { UserContext } from '../contexts/UserContext'
 
 const Users = lazy(() => import('./Users').then(m => ({ default: m.Users })));
 const TypesPage = lazy(() => import('./TypesPage').then(m => ({ default: m.TypesPage })));
+const MapEditor = lazy(() => import('../components/MapEditor').then(m => ({ default: m.MapEditor })));
 
 export const Dashboard: FC = (): ReactElement => {
   const { user, login, setLogout, auth } = useContext(UserContext);
@@ -75,6 +76,7 @@ export const Dashboard: FC = (): ReactElement => {
               <Suspense fallback={<></>}>
                 <Route path={`${path}/pengguna`} component={Users} />
                 <Route path={`${path}/tipe-point`} component={TypesPage} />
+                <Route path={`${path}/map-editor`} component={MapEditor} />
               </Suspense>
             </div>
           }
