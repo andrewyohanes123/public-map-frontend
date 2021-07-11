@@ -16,7 +16,7 @@ export const Map = Mapbox({
 });
 
 // const { REACT_APP_MAP_URL, REACT_APP_MAP_STYLE }: NodeJS.ProcessEnv = process.env;
-const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
+// const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 
 export const MainPage: FC = (): ReactElement => {
   const { pathname } = useLocation();
@@ -93,37 +93,41 @@ export const MainPage: FC = (): ReactElement => {
     <>
       <Toast ref={toast} />
       <Map
-        //eslint-disable-nextline 
+        //eslint-disable-next-line 
         style={
+          'mapbox://styles/mapbox/satellite-v9'
           // `${REACT_APP_MAP_URL}/map/maps/${REACT_APP_MAP_STYLE}?port=443&secured=true`
-          {
-            sources: {
-              land: {
-                type: 'geojson',
-                data: `${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/map/base`,         
-              }
-            },
-            layers: [
-              {
-                id: 'ocean',
-                type: 'background',
-                paint: {
-                  'background-color': '#00ffff'
-                }
-              },
-              {
-                id: 'land',
-                type: 'fill',
-                source: 'land',
-                'source-layer': 'land',        
-                paint: {
-                  'fill-color': 'black'
-                },
-              },
-            ],
-            name: 'empty',
-            version: 8,
-          }
+          // {
+          //   sources: {
+          //     land: {
+          //       type: 'geojson',
+          //       data: `${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/map/base`,         
+          //     }
+          //   },
+          //   layers: [
+          //     {
+          //       id: 'ocean',
+          //       type: 'background',
+          //       paint: {
+          //         'background-color': '#00ffff'
+          //       }
+          //     },
+          //     {
+          //       id: 'land',
+          //       type: 'fill',
+          //       source: 'land',
+          //       // 'source-layer': 'land',        
+          //       paint: {
+          //         'fill-color': '#ffffff'
+          //       },
+          //       layout: {
+          //         visibility: 'visible'
+          //       }
+          //     },
+          //   ],
+          //   name: 'empty',
+          //   version: 8,
+          // }
         }
         containerStyle={{
           height: '100%',

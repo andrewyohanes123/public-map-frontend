@@ -83,25 +83,25 @@ export const PublicPoints: FC = (): ReactElement => {
     }
   }, [types, points, map]);
 
-  useEffect(() => {
-    if (typeof map !== 'undefined') {
-      axios.get(`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/map/base`).then(resp => {
-        map.addSource('tc-land', {
-          type: 'geojson',
-          data: resp.data
-        });
-        map.addLayer({
-          id: 'tc-land',
-          source: 'tc-land',
-          // 'source-layer': 'land',
-          type: 'fill',
-          paint: {
-            'fill-color': '#ffffff',              
-          }
-        })
-      })
-    }
-  }, [map])
+  // useEffect(() => {
+  //   if (typeof map !== 'undefined') {
+  //     axios.get(`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/map/base`).then(resp => {
+  //       map.addSource('tc-land', {
+  //         type: 'geojson',
+  //         data: resp.data
+  //       });
+  //       map.addLayer({
+  //         id: 'tc-land',
+  //         source: 'tc-land',
+  //         // 'source-layer': 'land',
+  //         type: 'fill',
+  //         paint: {
+  //           'fill-color': '#ffffff',              
+  //         }
+  //       })
+  //     })
+  //   }
+  // }, [map])
 
   useEffect(() => {
     if (typeof map !== 'undefined' && imageLoaded && points.rows.length > 0) {
