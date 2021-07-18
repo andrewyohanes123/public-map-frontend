@@ -11,6 +11,7 @@ import { UserPoints } from '../components/UserPoints'
 
 export const Points: FC = (): ReactElement => {
   const [points, setPoints] = useState<{ rows: Point[], count: number }>({ rows: [], count: 0 });
+  const [query, setQuery] = useState<string>('');
   const [loading, toggleLoading] = useState<boolean>(true);
   const {push} = useHistory();
   const toast = useRef<Toast>(null);
@@ -33,7 +34,10 @@ export const Points: FC = (): ReactElement => {
         attributes: ['file', 'description', 'id']
       }],
       where: {
-        user_id: user?.id
+        user_id: user?.id,
+        name: {
+          $iLike: `%${query}%`
+        }
       },
       order: [['id', 'desc']]
     }).then(resp => {
@@ -42,7 +46,7 @@ export const Points: FC = (): ReactElement => {
     }).catch(e => {
       toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
     })
-  }, [toast, Point, user]);
+  }, [toast, Point, user, query]);
 
   useEffect(() => {
     getPoints();
@@ -55,7 +59,7 @@ export const Points: FC = (): ReactElement => {
       <div className="p-p-3" style={{ borderBottom: '1px solid var(--surface-800)' }}>
         <span className="p-input-icon-right p-d-block p-fluid p-mb-3">
           <i className="pi pi-search"></i>
-          <InputText placeholder="Cari Lokasi" className="p-inputtext-sm" />
+          <InputText value={query} onChange={(ev) => setQuery(ev.target.value)} placeholder="Cari Lokasi" className="p-inputtext-sm" />
         </span>
         <div className="p-d-block p-fluid">
           <Button onClick={() => push('/dashboard/tambah-lokasi')} icon="pi pi-plus" label="Tambah Lokasi" className="p-fluid p-button-sm" />
@@ -75,6 +79,13 @@ export const Points: FC = (): ReactElement => {
                 points.rows.map(point => (
                   <PointCard key={point.id} point={point} />
                 ))
+                :
+                query.length > 0 ?
+                <div className="p-mt-3 p-text-center" style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: 'calc(100% - 20px)' }}>
+                  <i className="pi pi-inbox p-text-center" style={{ color: '#ecf0f1', fontSize: 40 }} />
+                  <h3 className="p-mt-2 p-mb-2">Lokasi dengan nama {query} tidak ditemukan</h3>
+                  <Button label="Tambah Lokasi" className="p-button-sm" />
+                </div>
                 :
                 <div className="p-mt-3 p-text-center" style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: 'calc(100% - 20px)' }}>
                   <i className="pi pi-inbox p-text-center" style={{ color: '#ecf0f1', fontSize: 40 }} />

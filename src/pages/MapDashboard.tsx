@@ -1,5 +1,5 @@
 import { FC, ReactElement, useContext, useCallback, lazy, Suspense, useRef, useState } from 'react'
-import { useRouteMatch, Route, Redirect } from 'react-router-dom'
+import { useRouteMatch, Route, Redirect, useHistory } from 'react-router-dom'
 import { Menubar } from 'primereact/menubar'
 import { Toast } from 'primereact/toast'
 import { Button } from 'primereact/button'
@@ -15,6 +15,7 @@ export const MapDashboard: FC = (): ReactElement => {
   const { path } = useRouteMatch();
   const toast = useRef<Toast>(null);
   const [loading, toggleLoading] = useState<boolean>(false);
+  const { push } = useHistory();
 
   document.title = `Dashboard`
 
@@ -35,7 +36,12 @@ export const MapDashboard: FC = (): ReactElement => {
     user !== null && login ?
       <div style={{ background: 'var(--surface-500)', height: '100%' }} className="p-p-3">
         <Toast ref={toast} />
-        <Menubar start={user.name} end={<Button onClick={logout} icon={`pi ${loading ? 'pi-spin pi-spinner' : 'pi-fw pi-sign-out'}`} className="p-button-sm p-button-danger p-button-rounded" />} />
+        <Menubar start={user.name} end={
+          <>
+            <Button onClick={() => push(`/`)} icon={`pi pi-map`} className="p-button-sm p-button-rounded p-mr-2" />
+            <Button onClick={logout} icon={`pi ${loading ? 'pi-spin pi-spinner' : 'pi-fw pi-sign-out'}`} className="p-button-sm p-button-danger p-button-rounded" />
+          </>
+        } />
         <div style={{ width: '100%', height: 'calc(100% - 55.7px + 8px - 16px)', background: 'var(--surface-100)', borderRadius: 8, overflow: 'hidden', padding: 0, margin: 0 }} className="p-mt-2 p-shadow-3">
           <div style={{ margin: 0 }} className="p-grid h-100">
             <div style={{ background: 'var(--surface-400)', padding: 0, }} className="p-col-3 h-100">

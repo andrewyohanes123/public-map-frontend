@@ -5,11 +5,13 @@ import { Button } from 'primereact/button';
 import { PointSidebar } from './PointSidebar';
 import { SelectedPoint } from '../App';
 import { PointsByType } from './PointsByType';
+import { SearchPoint } from './SearchPoint';
 
 export const SearchButton: FC = (): ReactElement => {
   const [types, setTypes] = useState<Type[]>([]);
   const [showType, toggleShowType] = useState<boolean>(false);
   const [selectedType, setSelectedType] = useState<Type | undefined>(undefined);
+  const [query, setQuery] = useState<string>('');
   const { models } = useContext(ModelsContext);
   const { sidebar } = useContext(SelectedPoint);
   const { Type } = models!;
@@ -32,11 +34,15 @@ export const SearchButton: FC = (): ReactElement => {
     toggleShowType(!sidebar && typeof selectedType === 'undefined');
   }, [sidebar, selectedType]);
 
+  useEffect(() => {
+    (query.length > 0) && toggleShowType(false)
+  }, [query]);
+
   return (
     <div className="search-container">
       <div className="search-toolbar p-shadow-3">
         <div className="search-input-box">
-          <input className="search-input" type="text" placeholder="Cari Lokasi" />
+          <input value={query} onChange={ev => setQuery(ev.target.value)} className="search-input" type="text" placeholder="Cari Lokasi" />
         </div>
       </div>
       <div className={`search-toolbar ${showType ? 'p-mt-3' : 'p-mt-2'} p-p-3 p-shadow-3`}>
@@ -61,8 +67,12 @@ export const SearchButton: FC = (): ReactElement => {
       <PointSidebar />
       {(typeof selectedType !== 'undefined' && !sidebar) && <PointsByType type_id={selectedType.id} type={selectedType} onBack={() => {
         setSelectedType(undefined);
+        toggleShowType(query.length === 0)
+      }} />}
+      {(query.length > 0 && !sidebar) && <SearchPoint query={query} onBack={() => {
         toggleShowType(true)
-        }} />}
+        setQuery(``)
+      }} />}
     </div>
   )
 }

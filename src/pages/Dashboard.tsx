@@ -62,7 +62,7 @@ export const Dashboard: FC = (): ReactElement => {
               <div className="p-col-11">
                 <h5>{user.name}</h5>
               </div>
-              <div className="p-col">
+              <div className="p-col">                
                 <Button onClick={logout} icon={`pi ${loading ? 'pi-spin pi-spinner' : 'pi-fw pi-sign-out'}`} className="p-button-danger p-button-sm p-button-rounded" />
               </div>
             </div>
