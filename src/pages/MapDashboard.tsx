@@ -49,6 +49,7 @@ export const MapDashboard: FC = (): ReactElement => {
                 <Route path={`${path}/`} exact component={Points} />
                 <Route path={`${path}/tambah-lokasi`} exact component={AddPoint} />
                 <Route path={`${path}/lokasi/:id`} exact component={PointDetail} />
+                <Route path={`${path}/edit-lokasi/:id`} exact component={AddPoint} />
               </Suspense>
             </div>
             <div className="p-col-9 h-100" style={{ padding: 0 }}>

@@ -47,10 +47,19 @@ export const Points: FC = (): ReactElement => {
       toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
     })
   }, [toast, Point, user, query]);
-
+  
   useEffect(() => {
     getPoints();
   }, [getPoints]);
+  
+  const deletePoint = useCallback((point: Point) => {
+    point.delete().then(resp => {    
+      getPoints();
+      toast.current?.show({ severity: 'success', summary: 'Data berhasil dihapus', detail: `Data ${resp.name} berhasil dihapus` });
+    }).catch(e => {      
+      toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
+    })
+  }, [getPoints])
 
   return (
     <div style={{ height: 'calc(100%)' }}>
@@ -77,7 +86,7 @@ export const Points: FC = (): ReactElement => {
               :
               points.rows.length > 0 ?
                 points.rows.map(point => (
-                  <PointCard key={point.id} point={point} />
+                  <PointCard key={point.id} onDelete={deletePoint} point={point} />
                 ))
                 :
                 query.length > 0 ?

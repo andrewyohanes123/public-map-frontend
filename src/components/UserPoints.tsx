@@ -89,46 +89,48 @@ export const UserPoints: FC = (): ReactElement => {
     if (typeof map !== 'undefined' && imageLoaded && points.rows.length > 0) {
       const currentSource = map.getSource('points');
       const currentLayer = map.getLayer('points');
-      if (typeof currentLayer === 'undefined' && typeof currentSource === 'undefined') {
-        map.addSource('points', {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: points.rows.map((point: Point) => ({
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [point.longitude, point.latitude],
-              },
-              properties: {
-                title: point.name,
-                icon: `icon-image${point.type_id}`
-              }
-            }))
-          }
-        });
+      (typeof currentLayer !== 'undefined') && map.removeLayer('points');
+      (typeof currentSource !== 'undefined') && map.removeSource('points');
 
-        map.addLayer({
-          'id': 'points',
-          type: 'symbol',
-          source: 'points',
-          layout: {
-            'icon-image': ['get', 'icon'],
-            'icon-size': 0.30,
-            'icon-anchor': 'bottom',
-            'icon-offset': [0, 25],
-            // 'text-field': ['get', 'title'],
-            // 'text-offset': [0, 1.25],
-            // 'text-anchor': 'top',
-            // 'text-size': 0.3,
-            // 'text-font': [
-            //   'literal',
-            //   ['DIN Offc Pro Italic', 'Arial Unicode MS Regular']
-            // ]
-            // 'text-font': ['Arial']
-          }
-        });
-      }
+      map.addSource('points', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: points.rows.map((point: Point) => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [point.longitude, point.latitude],
+            },
+            properties: {
+              title: point.name,
+              icon: `icon-image${point.type_id}`
+            }
+          }))
+        }
+      });
+
+      map.addLayer({
+        'id': 'points',
+        type: 'symbol',
+        source: 'points',
+        layout: {
+          'icon-image': ['get', 'icon'],
+          'icon-size': 0.30,
+          'icon-anchor': 'bottom',
+          'icon-offset': [0, 25],
+          // 'text-field': ['get', 'title'],
+          // 'text-offset': [0, 1.25],
+          // 'text-anchor': 'top',
+          // 'text-size': 0.3,
+          // 'text-font': [
+          //   'literal',
+          //   ['DIN Offc Pro Italic', 'Arial Unicode MS Regular']
+          // ]
+          // 'text-font': ['Arial']
+        }
+      });
+
     }
     return () => {
       // if (typeof map !== 'undefined') {

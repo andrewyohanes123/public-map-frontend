@@ -5,8 +5,8 @@ import { Marker } from 'mapbox-gl'
 import * as yup from 'yup'
 import { FormInput } from '../components/FormInput'
 import { ModelsContext } from '../contexts/ModelsContext'
-import { useHistory } from 'react-router'
-import { Type } from '../types/Types'
+import { useHistory, useParams } from 'react-router'
+import { Point, Type } from '../types/Types'
 import { Toast } from 'primereact/toast'
 import { Dropdown } from 'primereact/dropdown'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -19,7 +19,9 @@ const validationSchema = yup.object().shape({
   type_id: yup.number().required('Pilih tipe lokasii')
 })
 
-const initialValues = { name: '', type_id: undefined, description: '' };
+type initVal = { name: string, type_id?: number, description: string }
+
+const initialValues: initVal = { name: '', type_id: undefined, description: '' };
 
 export interface AddPointProps {
   // onSubmit: (val: typeof initialValues, cb: () => void) => void;
@@ -28,12 +30,14 @@ export interface AddPointProps {
 export const AddPoint: FC<AddPointProps> = (): ReactElement => {
   const [loading, toggleLoading] = useState<boolean>(false);
   const [coords, setCoords] = useState<[number, number]>([3, 3]);
+  const [point, setPoint] = useState<Point | undefined>(undefined);
   const [types, setTypes] = useState<Type[]>([]);
   const { models } = useContext(ModelsContext);
   const { map } = useContext(MapInstance);
   const { user } = useContext(UserContext);
   const { Point, Type } = models!;
   const { push } = useHistory();
+  const { id } = useParams<{ id: string }>();
   const toast = useRef<Toast>(null);
 
   const onFinish = useCallback((val: typeof initialValues, formik: FormikHelpers<typeof initialValues>) => {
@@ -51,6 +55,34 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
     });
   }, [Point, user, coords, push]);
 
+  const onUpdate = useCallback((val: initVal, formik: FormikHelpers<typeof initialValues>) => {
+    toggleLoading(true);
+    if (typeof point !== 'undefined') {
+      point.update({
+        ...val,
+        longitude: coords[0],
+        latitude: coords[1]
+      }).then(resp => {
+        toast.current?.show({ severity: 'success', summary: 'Lokasi Disimpan', detail: `Lokasi ${resp.name} berhasil disimpan` });
+        push(`/dashboard`);
+      }).catch(e => {
+        toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
+      });
+    }
+  }, [point, coords, push]);
+
+  const getPoint = useCallback(() => {
+    if (typeof id !== 'undefined') {
+      Point.single(parseInt(id)).then(resp => {
+        setPoint(resp as Point);
+        console.log(resp)
+        map?.setCenter([resp.longitude, resp.latitude]);
+      }).catch(e => {
+        toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
+      });
+    }
+  }, [id, Point, map]);
+
   const getTypes = useCallback(() => {
     Type.collection({
       attributes: ['name', 'icon', 'color']
@@ -66,6 +98,10 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
   }, [getTypes]);
 
   useEffect(() => {
+    (typeof id !== 'undefined') && getPoint();
+  }, [getPoint, id])
+
+  useEffect(() => {
     const marker = new Marker({
       color: `red`,
       draggable: true,
@@ -74,8 +110,14 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
       // }
     });
     if (typeof map !== 'undefined') {
-      setCoords([map.getCenter().lng, map.getCenter().lat]);
-      marker.setLngLat(map.getCenter()).addTo(map)
+      if (typeof point !== 'undefined') {
+        setCoords([point.longitude, point.latitude]);
+        map.setCenter([point.longitude, point.latitude]);
+        marker.setLngLat([point.longitude, point.latitude]).addTo(map)
+      } else {
+        setCoords([map.getCenter().lng, map.getCenter().lat]);
+        marker.setLngLat(map.getCenter()).addTo(map)
+      }
       marker.on('dragend', () => {
         const coords = marker.getLngLat();
         setCoords([coords.lng, coords.lat]);
@@ -88,7 +130,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
     return () => {
       marker.remove()
     }
-  }, [map]);
+  }, [map, point]);
 
   return (
     <div style={{ color: 'white' }}>
@@ -98,11 +140,21 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
           <Button onClick={() => push('/dashboard/')} className="p-button-sm" icon="pi pi-chevron-left" />
         </div>
         <div style={{ color: 'white' }} className="p-mr-2 p-pl-2 p-pt-2 p-text-center">
-          <p className="p-text-center">Tambah Lokasi</p>
+          {
+            typeof id !== 'undefined' ?
+              <p className="p-text-center">Edit Lokasi</p>
+              :
+              <p className="p-text-center">Tambah Lokasi</p>
+          }
         </div>
       </div>
       <div className="p-p-3">
-        <Formik validationSchema={validationSchema} onSubmit={onFinish} initialValues={initialValues}>
+        <Formik validationSchema={validationSchema} onSubmit={typeof point !== 'undefined' ? onUpdate : onFinish} key={point?.id ?? 10} initialValues={
+          typeof point !== 'undefined' ?
+            { name: point.name!, type_id: point.type_id, description: point.description! }
+            :
+            initialValues
+        }>
           {({ handleSubmit, touched, errors, values, handleBlur, handleChange }) => (
             <form onSubmit={handleSubmit}>
               <FormInput autoComplete="off" loading={loading} name="name" label="Nama Lokasi" touched={touched} onChange={handleChange} onBlur={handleBlur} errors={errors} values={values} />
@@ -138,7 +190,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
                 {(errors.type_id && touched.type_id) && <small className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`}>{errors.type_id}</small>}
               </div>
               <div className="p-field p-fluid p-d-block">
-                <Button label="Tambah" icon="pi pi-fw pi-plus" className="p-button-success p-button-sm p-fluid" />
+                <Button label={typeof id !== 'undefined' ? 'Simpan' : "Tambah"} icon={`pi pi-fw ${typeof id !== 'undefined' ? `pi-save` : 'pi-plus'}`} className="p-button-success p-button-sm p-fluid" />
               </div>
             </form>
           )}
