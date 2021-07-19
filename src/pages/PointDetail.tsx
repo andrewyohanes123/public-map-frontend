@@ -82,6 +82,15 @@ export const PointDetail: FC = (): ReactElement => {
       }
     });
   }, [selectedPictures, Picture, id, getPictures]);
+  
+  const deletePicture = useCallback((pic: Picture) => {
+    pic.delete().then(resp => {
+      console.log(resp);
+      getPictures();
+    }).catch(e => {
+      toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
+    })
+  }, [getPictures]);
 
   useEffect(() => {
     getPoint();
@@ -98,6 +107,7 @@ export const PointDetail: FC = (): ReactElement => {
         <div className="p-p-3">
           <h2 style={{ color: 'var(--text-color)' }} className="p-text-normal">{point.name}</h2>
           <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-4">{point.type.name}</p>
+          <p style={{ color: 'var(--text-color)' }}>{point.description}</p>
         </div>
         <Dropzone multiple onDropAccepted={selectPictures} accept={['image/png', 'image/jpeg', 'image/jpg']}>
           {({ getInputProps, getRootProps }) => (
@@ -131,7 +141,7 @@ export const PointDetail: FC = (): ReactElement => {
         <div className="p-p-3">
           {
             pictures.map(pic => (
-              <ImagePreviewCard key={pic.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${pic.id}`} onRemove={() => console.log(pic)} />
+              <ImagePreviewCard key={pic.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${pic.id}`} onRemove={() => deletePicture(pic)} />
             ))
           }
         </div>

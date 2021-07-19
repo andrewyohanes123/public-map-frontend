@@ -48,9 +48,10 @@ export const PointSidebar: FC = (): ReactElement => {
               toggleSidebar(false)
             }} className="p-mb-3 p-button-danger p-button-outlined p-button-sm p-button-rounded" />
             <h3>{point?.name}</h3>
-            <p style={{ color: 'var(--text-color-secondary)' }}>{point?.type.name}</p>
+            <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-3">{point?.type.name}</p>
+            <p>{point?.description}</p>
             {point?.pictures?.length === 0 ?
-              <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mt-3">
+              <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mt-3 p-mb-3">
                 <i className="pi pi-fw pi-image" style={{ fontSize: 50, color: 'var(--text-color-secondary)' }}></i>
                 <p style={{ color: 'var(--text-color-secondary)' }} className="p-text-center">Tidak ada gambar</p>
               </div>
