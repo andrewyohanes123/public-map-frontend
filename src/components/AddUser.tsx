@@ -11,13 +11,14 @@ export interface AddUserProps {
   onSubmit: (val: User, cb: () => void) => void;
   user?: User;
   visible: boolean;
-  onHide: () => void;
+  onHide: () => void;  
 }
 
 type User = {
+  id?: number;
   username: string;
   name: string;
-  password: string;
+  password?: string;
   type: 'Administrator' | 'Contributor';
 }
 
@@ -28,12 +29,18 @@ const validationSchema = yup.object().shape({
   type: yup.string().required('Pilih tipe pengguna'),
 })
 
+const editValidationSchema = yup.object().shape({
+  name: yup.string().required('Masukkan nama lengkap'),
+  username: yup.string().required('Masukkan username'),
+  type: yup.string().required('Pilih tipe pengguna'),
+})
+
 const options: SelectItem[] = [
   { value: 'Administrator', label: 'Administrator' },
   { value: 'Contributor', label: 'Contributor' }
 ]
 
-export const AddUser: FC<AddUserProps> = ({ onSubmit, visible, onHide }): ReactElement => {
+export const AddUser: FC<AddUserProps> = ({ onSubmit, visible, onHide, user }): ReactElement => {
   const [loading, toggleLoading] = useState<boolean>(false);
 
   const onFinish = useCallback((val: User, helpers: FormikHelpers<User>) => {
@@ -46,11 +53,12 @@ export const AddUser: FC<AddUserProps> = ({ onSubmit, visible, onHide }): ReactE
 
   return (
     <Sidebar position="top" className="p-sidebar-lg" onHide={onHide} visible={visible}>
-      <h3 className="p-d-block p-mb-3">Tambah Pengguna</h3>
+      <h3 className="p-d-block p-mb-3">{typeof user !== 'undefined' ? `Edit ${user.name}` : 'Tambah Pengguna'}</h3>
       <Formik
-        initialValues={{ name: '', username: '', password: '', type: 'Administrator' }}
+        key={typeof user !== 'undefined' ? user.id : 120}
+        initialValues={typeof user !== 'undefined' ? {name: `${user.name}`, username: user.username, type: user.type} : { name: '', username: '', password: '', type: 'Administrator' }}
         onSubmit={onFinish}
-        validationSchema={validationSchema}
+        validationSchema={typeof user !== 'undefined' ? editValidationSchema : validationSchema}
       >
         {({ handleSubmit, values, touched, handleBlur, handleChange, errors }) => (
           <form className="p-d-block" onSubmit={handleSubmit}>
@@ -87,7 +95,7 @@ export const AddUser: FC<AddUserProps> = ({ onSubmit, visible, onHide }): ReactE
               {(touched.password && errors.password) && <small className="p-error p-d-block">{errors.password}</small>}
             </div>
             <div className="p-field p-d block p-fluid">
-              <Button icon={loading ? "pi pi-spin pi-spinner" : undefined} label="Tambah Pengguna" className="p-button-success" />
+              <Button icon={loading ? "pi pi-spin pi-spinner" : undefined} label={typeof user !== 'undefined' ? "Simpan" : "Tambah Pengguna"} className="p-button-success" />
             </div>
           </form>
         )}

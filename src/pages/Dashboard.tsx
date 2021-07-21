@@ -26,11 +26,11 @@ export const Dashboard: FC = (): ReactElement => {
         icon: 'pi pi-fw pi-user',
         target: `${path}/pengguna`
       },
-      {
-        label: 'Tipe Point',
-        icon: 'pi pi-fw pi-map-marker',
-        target: `${path}/tipe-point`
-      },
+      // {
+      //   label: 'Tipe Point',
+      //   icon: 'pi pi-fw pi-map-marker',
+      //   target: `${path}/tipe-point`
+      // },
     ]
   ), [path]);
 
@@ -63,6 +63,7 @@ export const Dashboard: FC = (): ReactElement => {
                 <h5>{user.name}</h5>
               </div>
               <div className="p-col">                
+                <Button onClick={() => push('/')} icon={`pi pi-map`} className="p-button-primary p-button-sm p-button-rounded p-mr-3" />
                 <Button onClick={logout} icon={`pi ${loading ? 'pi-spin pi-spinner' : 'pi-fw pi-sign-out'}`} className="p-button-danger p-button-sm p-button-rounded" />
               </div>
             </div>
@@ -77,6 +78,9 @@ export const Dashboard: FC = (): ReactElement => {
                 <Route path={`${path}/pengguna`} component={Users} />
                 <Route path={`${path}/tipe-point`} component={TypesPage} />
                 <Route path={`${path}/map-editor`} component={MapEditor} />
+                <Route path={`/`}>
+                  <Redirect to={`${path}/pengguna`} />
+                </Route>
               </Suspense>
             </div>
           }
