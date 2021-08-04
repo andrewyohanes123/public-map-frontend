@@ -15,6 +15,8 @@ const validationSchema = yup.object().shape({
 export const Login: FC = (): ReactElement => {
   const { auth, setLogin, login: loggedIn } = useContext(UserContext);
 
+  document.title = "Login"
+
   const login = useCallback(
     ({ username, password }: { username: string, password: string }) => {
       console.log({ username, password })

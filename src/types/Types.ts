@@ -70,3 +70,24 @@ export interface Snapshot {
   opacity: number;
   color: string;
 }
+
+export interface MangroveAmountAttributes extends ModelInstance {
+	amount: number;
+  mangrove_type_id?: number;
+  point_id?: number;
+	created_at?: Date;
+	updated_at?: Date;
+}
+
+export interface RawMangroveAmountAttributes {
+  id: number;
+	amount: number;
+  mangrove_type_id: number;
+  point_id: number;
+}
+
+export interface MangroveTypeAttributes extends ModelInstance {
+	name: string;
+	created_at?: Date;
+	updated_at?: Date;
+}

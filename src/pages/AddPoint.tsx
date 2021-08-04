@@ -10,18 +10,20 @@ import { Point, Type } from '../types/Types'
 import { Toast } from 'primereact/toast'
 import { Dropdown } from 'primereact/dropdown'
 import { InputTextarea } from 'primereact/inputtextarea'
+import { InputNumber } from 'primereact/inputnumber'
 import { MapInstance } from '../contexts/MapInstanceContext'
 import { UserContext } from '../contexts/UserContext'
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Masukkan nama lokasi'),
   description: yup.string(),
-  type_id: yup.number().required('Pilih tipe lokasii')
+  type_id: yup.number().required('Pilih tipe lokasii'),
+  surface_area: yup.number().required('Masukkan luas daerah')
 })
 
-type initVal = { name: string, type_id?: number, description: string }
+type initVal = { name: string, type_id?: number, description: string, surface_area: number }
 
-const initialValues: initVal = { name: '', type_id: undefined, description: '' };
+const initialValues: initVal = { name: '', type_id: undefined, description: '', surface_area: 0 };
 
 export interface AddPointProps {
   // onSubmit: (val: typeof initialValues, cb: () => void) => void;
@@ -151,13 +153,18 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
       <div className="p-p-3">
         <Formik validationSchema={validationSchema} onSubmit={typeof point !== 'undefined' ? onUpdate : onFinish} key={point?.id ?? 10} initialValues={
           typeof point !== 'undefined' ?
-            { name: point.name!, type_id: point.type_id, description: point.description! }
+            { name: point.name!, type_id: point.type_id, description: point.description!, surface_area: point.surface_area }
             :
             initialValues
         }>
-          {({ handleSubmit, touched, errors, values, handleBlur, handleChange }) => (
+          {({ handleSubmit, touched, errors, values, handleBlur, handleChange, setFieldValue }) => (
             <form onSubmit={handleSubmit}>
-              <FormInput autoComplete="off" loading={loading} name="name" label="Nama Lokasi" touched={touched} onChange={handleChange} onBlur={handleBlur} errors={errors} values={values} />
+              <FormInput autoComplete="off" type="text" loading={loading} name="name" label="Nama Lokasi" touched={touched} onChange={handleChange} onBlur={handleBlur} errors={errors} values={values} />
+              <div className="p-field p-d-block p-fluid">
+                <label className={`${errors.surface_area && touched.surface_area ? 'p-error p-d-block' : ''}`} htmlFor="">Tipe</label>
+                <InputNumber name="surface_area" value={`${values.surface_area}`.length > 0 ? parseInt(`${values.surface_area}`) : 0} mode="decimal" onBlur={handleBlur} onChange={e => setFieldValue('surface_area', e.value !== null ? e.value : 0)} suffix="km2" className={`${errors.type_id && touched.type_id ? 'p-invalid' : ''}`} />
+                {(errors.type_id && touched.type_id) && <small className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`}>{errors.type_id}</small>}
+              </div>
               <div className="p-field p-d-block p-fluid">
                 <label className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`} htmlFor="">Tipe</label>
                 <Dropdown

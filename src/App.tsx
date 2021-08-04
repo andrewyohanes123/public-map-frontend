@@ -44,7 +44,7 @@ const App: FC = (): ReactElement => {
   const [pointId, setPoint] = useState<number | undefined>();
   const [pointSidebar, togglePointSidebar] = useState<boolean>(false);
 
-  document.title = "Public Map"
+  document.title = "Map"
 
   const connect = useCallback(() => {
     toggleLoading(true);

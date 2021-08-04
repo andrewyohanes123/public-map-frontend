@@ -10,6 +10,7 @@ import { UserContext } from '../contexts/UserContext'
 const Users = lazy(() => import('./Users').then(m => ({ default: m.Users })));
 const TypesPage = lazy(() => import('./TypesPage').then(m => ({ default: m.TypesPage })));
 const MapEditor = lazy(() => import('../components/MapEditor').then(m => ({ default: m.MapEditor })));
+const MangroveType = lazy(() => import('./MangroveTypes'));
 
 export const Dashboard: FC = (): ReactElement => {
   const { user, login, setLogout, auth } = useContext(UserContext);
@@ -26,11 +27,11 @@ export const Dashboard: FC = (): ReactElement => {
         icon: 'pi pi-fw pi-user',
         target: `${path}/pengguna`
       },
-      // {
-      //   label: 'Tipe Point',
-      //   icon: 'pi pi-fw pi-map-marker',
-      //   target: `${path}/tipe-point`
-      // },
+      {
+        label: 'Tipe Mangrove',
+        icon: 'pi pi-fw pi-map-marker',
+        target: `${path}/tipe-mangrove`
+      },
     ]
   ), [path]);
 
@@ -75,12 +76,13 @@ export const Dashboard: FC = (): ReactElement => {
             <div style={{ height: 'calc(100%)', overflow: 'hidden' }}>
               <TabMenu activeItem={menuItems.find(item => item.target === pathname)} onTabChange={navigate} model={menuItems} />
               <Suspense fallback={<></>}>
-                <Route path={`${path}/pengguna`} component={Users} />
-                <Route path={`${path}/tipe-point`} component={TypesPage} />
-                <Route path={`${path}/map-editor`} component={MapEditor} />
-                <Route path={`/`}>
+                <Route exact path={`${path}/`}>
                   <Redirect to={`${path}/pengguna`} />
                 </Route>
+                <Route path={`${path}/pengguna`} component={Users} />
+                <Route path={`${path}/tipe-point`} component={TypesPage} />
+                <Route path={`${path}/tipe-mangrove`} component={MangroveType} />
+                <Route path={`${path}/map-editor`} component={MapEditor} />
               </Suspense>
             </div>
           }

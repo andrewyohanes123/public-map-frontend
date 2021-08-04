@@ -4,6 +4,7 @@ import { FC, ReactElement, useContext, useEffect, useCallback, useState } from '
 import { SelectedPoint } from '../App'
 import { ModelsContext } from '../contexts/ModelsContext';
 import { Point } from '../types/Types';
+import AddMangroveAmount from './AddMangroveAmount';
 import { SidebarCoverImage } from './SidebarCoverImage';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
@@ -49,7 +50,9 @@ export const PointSidebar: FC = (): ReactElement => {
             }} className="p-mb-3 p-button-danger p-button-outlined p-button-sm p-button-rounded" />
             <h3>{point?.name}</h3>
             <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-3">{point?.type.name}</p>
-            <p>{point?.description}</p>
+            <p className="p-mb-1">Luas daerah{point?.surface_area} Ha</p>
+            <p><small>{point?.description}</small></p>
+            <AddMangroveAmount preview={true} point_id={point?.id} surface_area={point?.surface_area} />
             {point?.pictures?.length === 0 ?
               <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mt-3 p-mb-3">
                 <i className="pi pi-fw pi-image" style={{ fontSize: 50, color: 'var(--text-color-secondary)' }}></i>

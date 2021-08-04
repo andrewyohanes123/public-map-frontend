@@ -8,6 +8,7 @@ import { Picture, Point } from '../types/Types';
 import Dropzone from 'react-dropzone'
 import { UserPoints } from '../components/UserPoints';
 import { ImagePreviewCard } from '../components/ImagePreviewCard';
+import AddMangroveAmount from '../components/AddMangroveAmount';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 export const PointDetail: FC = (): ReactElement => {
@@ -20,7 +21,7 @@ export const PointDetail: FC = (): ReactElement => {
   const { map } = useContext(MapInstance);
   const { Point: PointSingle, Picture } = models!;
   const { id } = useParams<{ id: string }>();
-  const {push} = useHistory();
+  const { push } = useHistory();
 
   document.title = typeof point !== 'undefined' ? `Dashboard - ${point.name}` : 'Public Map'
 
@@ -82,7 +83,7 @@ export const PointDetail: FC = (): ReactElement => {
       }
     });
   }, [selectedPictures, Picture, id, getPictures]);
-  
+
   const deletePicture = useCallback((pic: Picture) => {
     pic.delete().then(resp => {
       console.log(resp);
@@ -107,7 +108,12 @@ export const PointDetail: FC = (): ReactElement => {
         <div className="p-p-3">
           <h2 style={{ color: 'var(--text-color)' }} className="p-text-normal">{point.name}</h2>
           <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-4">{point.type.name}</p>
-          <p style={{ color: 'var(--text-color)' }}>{point.description}</p>
+          <p className="color-text">Luas daerah : {point.surface_area} Km<sup>2</sup> </p>
+          <p style={{ color: 'var(--text-color)' }}>
+            <small>
+              {point.description}
+            </small>
+          </p>
         </div>
         <Dropzone multiple onDropAccepted={selectPictures} accept={['image/png', 'image/jpeg', 'image/jpg']}>
           {({ getInputProps, getRootProps }) => (
@@ -138,6 +144,7 @@ export const PointDetail: FC = (): ReactElement => {
                 </div>
           )}
         </Dropzone>
+        <AddMangroveAmount surface_area={point.surface_area} />
         <div className="p-p-3">
           {
             pictures.map(pic => (
