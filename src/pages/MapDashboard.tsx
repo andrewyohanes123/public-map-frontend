@@ -43,8 +43,8 @@ export const MapDashboard: FC = (): ReactElement => {
           </>
         } />
         <div style={{ width: '100%', height: 'calc(100% - 55.7px + 8px - 16px)', background: 'var(--surface-100)', borderRadius: 8, overflow: 'hidden', padding: 0, margin: 0 }} className="p-mt-2 p-shadow-3">
-          <div style={{ margin: 0 }} className="p-grid h-100">
-            <div style={{ background: 'var(--surface-400)', padding: 0, }} className="p-col-3 h-100">
+          <div style={{ margin: 0}} className="p-grid h-100">
+            <div style={{ background: 'var(--surface-400)', padding: 0, overflow: 'auto' }} className="p-col-3 h-100">
               <Suspense fallback={<></>}>
                 <Route path={`${path}/`} exact component={Points} />
                 <Route path={`${path}/tambah-lokasi`} exact component={AddPoint} />
