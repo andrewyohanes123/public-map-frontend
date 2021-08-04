@@ -162,7 +162,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
               <FormInput autoComplete="off" type="text" loading={loading} name="name" label="Nama Lokasi" touched={touched} onChange={handleChange} onBlur={handleBlur} errors={errors} values={values} />
               <div className="p-field p-d-block p-fluid">
                 <label className={`${errors.surface_area && touched.surface_area ? 'p-error p-d-block' : ''}`} htmlFor="">Tipe</label>
-                <InputNumber name="surface_area" value={`${values.surface_area}`.length > 0 ? parseInt(`${values.surface_area}`) : 0} mode="decimal" onBlur={handleBlur} onChange={e => setFieldValue('surface_area', e.value !== null ? e.value : 0)} suffix="km2" className={`${errors.type_id && touched.type_id ? 'p-invalid' : ''}`} />
+                <InputNumber name="surface_area" value={`${values.surface_area}`.length > 0 ? parseInt(`${values.surface_area}`) : 0} mode="decimal" onBlur={handleBlur} onChange={e => setFieldValue('surface_area', e.value !== null ? e.value : 0)} suffix=" Ha" className={`${errors.type_id && touched.type_id ? 'p-invalid' : ''}`} />
                 {(errors.type_id && touched.type_id) && <small className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`}>{errors.type_id}</small>}
               </div>
               <div className="p-field p-d-block p-fluid">

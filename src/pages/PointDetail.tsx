@@ -108,7 +108,7 @@ export const PointDetail: FC = (): ReactElement => {
         <div className="p-p-3">
           <h2 style={{ color: 'var(--text-color)' }} className="p-text-normal">{point.name}</h2>
           <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-4">{point.type.name}</p>
-          <p className="color-text">Luas daerah : {point.surface_area} Km<sup>2</sup> </p>
+          <p className="color-text">Luas daerah : {point.surface_area} Ha</p>
           <p style={{ color: 'var(--text-color)' }}>
             <small>
               {point.description}
@@ -144,7 +144,7 @@ export const PointDetail: FC = (): ReactElement => {
                 </div>
           )}
         </Dropzone>
-        <AddMangroveAmount surface_area={point.surface_area} />
+        <AddMangroveAmount preview={false} surface_area={point.surface_area} />
         <div className="p-p-3">
           {
             pictures.map(pic => (

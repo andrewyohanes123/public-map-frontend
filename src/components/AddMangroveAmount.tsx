@@ -38,7 +38,7 @@ const AddMangroveAmount: FC<props> = ({ surface_area, preview, point_id }): Reac
           point_id: preview ? point_id : id
         },
         // @ts-ignore
-        required: typeof preview !== 'undefined'
+        required: preview
       }]
     }).then(resp => {
       setAmount(resp.rows as MangroveTypeAttributes[]);
@@ -74,7 +74,9 @@ const AddMangroveAmount: FC<props> = ({ surface_area, preview, point_id }): Reac
 
   const totalAmount: number = useMemo(() => ((amounts.length > 0 ? amounts.reduce((a, b) => (a + b)) : 0) / surface_area), [amounts, surface_area]);
 
-  const totalAmountRelative: number = useMemo(() => (totalAmount / amount.filter(amt => amt.mangrove_amounts.length > 0).length), [totalAmount, amount]);
+  const mangroveTypeTotal = useMemo(() => (amount.filter(amt => amt.mangrove_amounts.length > 0).length), [amount])
+
+  const totalAmountRelative: number = useMemo(() => (totalAmount === 0 ? 0 : totalAmount / mangroveTypeTotal), [totalAmount, mangroveTypeTotal]);
 
   return (
     <>
@@ -84,11 +86,11 @@ const AddMangroveAmount: FC<props> = ({ surface_area, preview, point_id }): Reac
           amount.map(amt => (
             <Card key={`${amt.id}${amt.name}`} title={amt.name} className="p-my-2">
               {
-                amt.mangrove_amounts.length === 0 ?                
+                amt.mangrove_amounts.length === 0 ?
                   <Button label="Masukkan jumlah" onClick={() => createMangroveAmount(amt.id)} className="p-fluid" />
                   :
                   amt.mangrove_amounts.map((mangrove: RawMangroveAmountAttributes) => (
-                    <MangroveAmountCard preview={true} key={mangrove.id} mangrove_amount={mangrove} mangrove_type={amt} onUpdateAmount={getAmount} />
+                    <MangroveAmountCard preview={preview} key={mangrove.id} mangrove_amount={mangrove} mangrove_type={amt} onUpdateAmount={getAmount} />
                   ))
               }
             </Card>
@@ -123,11 +125,11 @@ const AddMangroveAmount: FC<props> = ({ surface_area, preview, point_id }): Reac
           <p>{totalAmountRelative.toFixed(3)}%</p>
         </div>
         <p style={{ userSelect: 'none' }} className="p-mt-3">
-        {!preview ?
-          <small className="secondary-texy">Klik di sini untuk mengubah data</small>
-          :
-          <small className="secondary-texy">Klik di sini untuk data lanjutan</small>
-        }
+          {!preview ?
+            <small className="secondary-texy">Klik di sini untuk mengubah data</small>
+            :
+            <small className="secondary-texy">Klik di sini untuk data lanjutan</small>
+          }
         </p>
       </div>
     </>
