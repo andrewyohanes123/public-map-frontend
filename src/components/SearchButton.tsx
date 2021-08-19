@@ -1,34 +1,53 @@
 import { FC, ReactElement, useContext, useState, useEffect, useCallback } from 'react'
-import { Type } from '../types/Types'
+import { bbox, lineString } from '@turf/turf'
+import { District, Point } from '../types/Types'
 import { ModelsContext } from '../contexts/ModelsContext';
 import { Button } from 'primereact/button';
 import { PointSidebar } from './PointSidebar';
 import { SelectedPoint } from '../App';
 import { PointsByType } from './PointsByType';
 import { SearchPoint } from './SearchPoint';
+import { MapInstance } from '../contexts/MapInstanceContext';
 
 export const SearchButton: FC = (): ReactElement => {
-  const [types, setTypes] = useState<Type[]>([]);
+  const [types, setTypes] = useState<District[]>([]);
   const [showType, toggleShowType] = useState<boolean>(false);
-  const [selectedType, setSelectedType] = useState<Type | undefined>(undefined);
+  const [selectedType, setSelectedType] = useState<District | undefined>(undefined);
   const [query, setQuery] = useState<string>('');
+  const { map } = useContext(MapInstance)
   const { models } = useContext(ModelsContext);
   const { sidebar } = useContext(SelectedPoint);
-  const { Type } = models!;
+  const { District } = models!;
 
   const getTypes = useCallback(() => {
-    Type.collection({
-      attributes: ['name', 'icon', 'color']
+    District.collection({
+      attributes: ['name'],
+      include: [{
+        model: 'Point',
+        attributes: ['latitude', 'longitude']
+      }]
     }).then(resp => {
-      setTypes(resp.rows as Type[]);
+      setTypes(resp.rows as District[]);
     }).catch(e => {
-      console.log(e);
+      alert(e.toString());
     })
-  }, [Type]);
+  }, [District]);
 
   useEffect(() => {
     getTypes();
   }, [getTypes]);
+
+  useEffect(() => {
+    if (typeof selectedType !== 'undefined' && typeof map !== 'undefined') {
+      const coordinates: [number, number][] = selectedType.points.map((point: Point) => ([point.longitude, point.latitude]));
+      if (coordinates.length > 0) {
+        const line = lineString(coordinates);
+        const boundingBox = bbox(line);
+        // @ts-ignore
+        map.fitBounds(boundingBox, { padding: 100, zoom: 12.5 });
+      }
+    }
+  }, [selectedType, map]);
 
   useEffect(() => {
     toggleShowType(!sidebar && typeof selectedType === 'undefined');
@@ -61,11 +80,11 @@ export const SearchButton: FC = (): ReactElement => {
           ))}
         {/* </div> */}
         <div className={`p-d-flex p-flex-column p-jc-center p-ai-center ${showType ? 'p-mt-2' : ''}`}>
-          <Button onClick={() => toggleShowType(show => !show)} icon={`pi pi-fw pi-chevron-${showType ? 'up' : 'down'}`} label={`${showType ? 'Sembunyikan' : typeof selectedType !== 'undefined' ? 'Pilih' : 'Tampilkan'} Kategori`} className="p-button-sm p-button-outlined p-button-rounded" />
+          <Button onClick={() => toggleShowType(show => !show)} icon={`pi pi-fw pi-chevron-${showType ? 'up' : 'down'}`} label={`${showType ? 'Sembunyikan' : typeof selectedType !== 'undefined' ? 'Pilih' : 'Tampilkan'} Daerah`} className="p-button-sm p-button-outlined p-button-rounded" />
         </div>
       </div>
       <PointSidebar />
-      {(typeof selectedType !== 'undefined' && !sidebar) && <PointsByType type_id={selectedType.id} type={selectedType} onBack={() => {
+      {(typeof selectedType !== 'undefined' && !sidebar) && <PointsByType district_id={selectedType.id} district={selectedType} onBack={() => {
         setSelectedType(undefined);
         toggleShowType(query.length === 0)
       }} />}

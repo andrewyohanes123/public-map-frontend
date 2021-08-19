@@ -23,6 +23,12 @@ export interface Point extends ModelInstance {
   user?: User;
 }
 
+export interface Point extends ModelInstance {
+	name: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
 export interface Type extends ModelInstance {
 	name: string;
 	icon: string;
@@ -42,7 +48,7 @@ export interface User extends ModelInstance {
   picutres?: Picture[];
 }
 
-export interface District {
+export interface District extends ModelInstance{
   id: number;
   name: string;
   subdistricts: Subdistrict[];

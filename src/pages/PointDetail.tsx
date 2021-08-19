@@ -115,7 +115,7 @@ export const PointDetail: FC = (): ReactElement => {
             </small>
           </p>
         </div>
-        <Dropzone multiple onDropAccepted={selectPictures} accept={['image/png', 'image/jpeg', 'image/jpg']}>
+        {false && <Dropzone multiple onDropAccepted={selectPictures} accept={['image/png', 'image/jpeg', 'image/jpg']}>
           {({ getInputProps, getRootProps }) => (
             (selectedPictures.length > 0) ?
               <div {...getRootProps({ style: { height: 90, background: 'var(--surface-600)', borderRadius: 8, cursor: 'pointer' }, className: 'p-m-3 p-p-3 p-text-center p-d-flex p-flex-column p-jc-center p-ai-center' })}>
@@ -143,7 +143,7 @@ export const PointDetail: FC = (): ReactElement => {
                   <p style={{ color: 'var(--text-color-secondary)' }}>Klik kotak ini untuk menambah gambar lokasi</p>
                 </div>
           )}
-        </Dropzone>
+        </Dropzone>}
         <AddMangroveAmount preview={false} surface_area={point.surface_area} />
         <div className="p-p-3">
           {

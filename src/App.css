@@ -48,7 +48,15 @@ p {
   top: 15px;
   left: 15px;
   color: var(--text-color);
-  height: calc(100% - 30px);
+  max-height: calc(100% - 30px);
+  overflow: auto;
+  scrollbar-width: none;
+  border-radius: 8px;
+}
+
+.search-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .search-toolbar {

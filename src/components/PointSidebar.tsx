@@ -53,19 +53,21 @@ export const PointSidebar: FC = (): ReactElement => {
             <p className="p-mb-1">Luas daerah{point?.surface_area} Ha</p>
             <p><small>{point?.description}</small></p>
             <AddMangroveAmount preview={true} point_id={point?.id} surface_area={point?.surface_area} />
-            {point?.pictures?.length === 0 ?
-              <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mt-3 p-mb-3">
-                <i className="pi pi-fw pi-image" style={{ fontSize: 50, color: 'var(--text-color-secondary)' }}></i>
-                <p style={{ color: 'var(--text-color-secondary)' }} className="p-text-center">Tidak ada gambar</p>
-              </div>
-              :
-              <>
-              <h4 className="p-mt-2 p-mb-2">{point!.pictures!.length > 1 ? 'Foto - Foto' : 'Foto'}</h4>
-              {point?.pictures?.map(picture => (
-                <SidebarCoverImage key={picture.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${picture.id}`} />
-              ))}
-              </>
-            }
+            {false && <>
+              {point?.pictures?.length === 0 ?
+                <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mt-3 p-mb-3">
+                  <i className="pi pi-fw pi-image" style={{ fontSize: 50, color: 'var(--text-color-secondary)' }}></i>
+                  <p style={{ color: 'var(--text-color-secondary)' }} className="p-text-center">Tidak ada gambar</p>
+                </div>
+                :
+                <>
+                  <h4 className="p-mt-2 p-mb-2">{point!.pictures!.length > 1 ? 'Foto - Foto' : 'Foto'}</h4>
+                  {point?.pictures?.map(picture => (
+                    <SidebarCoverImage key={picture.id} src={`${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/picture/${picture.id}`} />
+                  ))}
+                </>
+              }
+            </>}
           </div>
         }
       </div>

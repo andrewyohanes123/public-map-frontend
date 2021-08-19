@@ -4,16 +4,16 @@ import { FC, ReactElement, useState, useCallback, useContext, useEffect } from '
 import { SelectedPoint } from '../App';
 import { MapInstance } from '../contexts/MapInstanceContext';
 import { ModelsContext } from '../contexts/ModelsContext';
-import { Point, Type } from '../types/Types'
+import { Point, District } from '../types/Types'
 import { PublicPointCard } from './PublicPointCard';
 
 export default interface PointsByTypeProps {
-  type_id?: number;
-  type: Type;
+  district_id?: number;
+  district: District;
   onBack?: () => void;
 }
 
-export const PointsByType: FC<PointsByTypeProps> = ({ type_id, type, onBack }): ReactElement => {
+export const PointsByType: FC<PointsByTypeProps> = ({ district_id, district, onBack }): ReactElement => {
   const [points, setPoints] = useState<Point[]>([]);
   const [loading, toggleLoading] = useState<boolean>(true);
   const [retryAttempt, setRetryAttempt] = useState<number>(0);
@@ -24,17 +24,15 @@ export const PointsByType: FC<PointsByTypeProps> = ({ type_id, type, onBack }): 
   const {setPointId, toggleSidebar} = useContext(SelectedPoint)
 
   const getPoints = useCallback(() => {
-    if (typeof type_id !== 'undefined') {
+    if (typeof district_id !== 'undefined') {
       toggleLoading(true);
       Point.collection({
-        attributes: ['name', 'longitude', 'latitude', 'type_id', 'id'],
+        attributes: ['name', 'longitude', 'latitude', 'district_id', 'id'],
         where: {
-          type_id
+          district_id
         },
         include: [{
           model: 'Type', attributes: ['name', 'color', 'id'],
-        }, {
-          model: 'Picture', attributes: ['id']
         }]
       }).then(resp => {
         setPoints(resp.rows as Point[]);
@@ -44,7 +42,7 @@ export const PointsByType: FC<PointsByTypeProps> = ({ type_id, type, onBack }): 
         console.log(e);
       })
     }
-  }, [Point, type_id]);
+  }, [Point, district_id]);
 
   const focusPoint = useCallback((point: Point) => {
     if (typeof map !== 'undefined') {
@@ -68,7 +66,7 @@ export const PointsByType: FC<PointsByTypeProps> = ({ type_id, type, onBack }): 
       {(loading && points.length > 0) ?
         <div style={{ maxHeight: 400 }} className="centered-items">
           <ProgressSpinner />
-          <p className="p-mt-3">Loading</p>
+          <p className="p-mt-3">Loading data hutan</p>
         </div>
         :
         points.length > 0 ?
@@ -78,7 +76,7 @@ export const PointsByType: FC<PointsByTypeProps> = ({ type_id, type, onBack }): 
           :
           <div style={{ maxHeight: 400 }} className="centered-items p-p-3">
             <i className="pi pi-fw pi-map-marker" style={{ fontSize: 60, color: 'var(--text-color-secondary)' }}></i>
-            <p className="p-mt-3">Tidak ada data {type.name}</p>
+            <p className="p-mt-3">Tidak ada data hutan mangrove pada {district.name}</p>
           </div>
       }
     </div>

@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { FormInput } from '../components/FormInput'
 import { ModelsContext } from '../contexts/ModelsContext'
 import { useHistory, useParams } from 'react-router'
-import { Point, Type } from '../types/Types'
+import { Point, Type, District } from '../types/Types'
 import { Toast } from 'primereact/toast'
 import { Dropdown } from 'primereact/dropdown'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -21,7 +21,7 @@ const validationSchema = yup.object().shape({
   surface_area: yup.number().required('Masukkan luas daerah')
 })
 
-type initVal = { name: string, type_id?: number, description: string, surface_area: number }
+type initVal = { name: string, type_id?: number, description: string, surface_area: number, district_id?: number }
 
 const initialValues: initVal = { name: '', type_id: undefined, description: '', surface_area: 0 };
 
@@ -34,10 +34,11 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
   const [coords, setCoords] = useState<[number, number]>([3, 3]);
   const [point, setPoint] = useState<Point | undefined>(undefined);
   const [types, setTypes] = useState<Type[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
   const { models } = useContext(ModelsContext);
   const { map } = useContext(MapInstance);
   const { user } = useContext(UserContext);
-  const { Point, Type } = models!;
+  const { Point, Type, District } = models!;
   const { push } = useHistory();
   const { id } = useParams<{ id: string }>();
   const toast = useRef<Toast>(null);
@@ -95,9 +96,20 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
     });
   }, [Type]);
 
+  const getDistricts = useCallback(() => {
+    District.collection({
+      attributes: ['name'],
+    }).then(resp => {
+      setDistricts(resp.rows as District[]);
+    }).catch(e => {
+      alert(e.toString());
+    })
+  }, [District]);
+
   useEffect(() => {
     getTypes();
-  }, [getTypes]);
+    getDistricts();
+  }, [getTypes, getDistricts]);
 
   useEffect(() => {
     (typeof id !== 'undefined') && getPoint();
@@ -153,7 +165,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
       <div className="p-p-3">
         <Formik validationSchema={validationSchema} onSubmit={typeof point !== 'undefined' ? onUpdate : onFinish} key={point?.id ?? 10} initialValues={
           typeof point !== 'undefined' ?
-            { name: point.name!, type_id: point.type_id, description: point.description!, surface_area: point.surface_area }
+            { name: point.name!, type_id: point.type_id, description: point.description!, surface_area: point.surface_area, district_id: point.district_id }
             :
             initialValues
         }>
@@ -164,6 +176,22 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
                 <label className={`${errors.surface_area && touched.surface_area ? 'p-error p-d-block' : ''}`} htmlFor="">Tipe</label>
                 <InputNumber name="surface_area" value={`${values.surface_area}`.length > 0 ? parseInt(`${values.surface_area}`) : 0} mode="decimal" onBlur={handleBlur} onChange={e => setFieldValue('surface_area', e.value !== null ? e.value : 0)} suffix=" Ha" className={`${errors.type_id && touched.type_id ? 'p-invalid' : ''}`} />
                 {(errors.type_id && touched.type_id) && <small className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`}>{errors.type_id}</small>}
+              </div>
+              <div className="p-field p-d-block p-fluid">
+                <label className={`${errors.district_id && touched.district_id ? 'p-error p-d-block' : ''}`} htmlFor="">Kabupaten/Kota</label>
+                <Dropdown
+                  value={values.district_id}
+                  onChange={handleChange}
+                  id="select"
+                  onBlur={handleBlur}
+                  options={districts.map(district => ({ value: district.id, label: district.name }))}
+                  name="district_id"
+                  placeholder="Pilih Kabupaten/Kota"
+                  className={`${errors.district_id && touched.district_id ? 'p-invalid' : ''}`}
+                  filter
+                  filterBy="label"
+                />
+                {(errors.district_id && touched.district_id) && <small className={`${errors.district_id && touched.district_id ? 'p-error p-d-block' : ''}`}>{errors.district_id}</small>}
               </div>
               <div className="p-field p-d-block p-fluid">
                 <label className={`${errors.type_id && touched.type_id ? 'p-error p-d-block' : ''}`} htmlFor="">Tipe</label>

@@ -11,7 +11,7 @@ export const Map = Mapbox({
   accessToken: 'pk.eyJ1IjoiYW5kcmV3eW9oYW5lcyIsImEiOiJjamxsc2c3MnQweHRuM2tsMXowNXR5ZTQ5In0.H6o00Jv2W2pfGbiY7BK7Yw',
   attributionControl: false,
   logoPosition: 'bottom-left',
-  minZoom: 10,
+  minZoom: 7,
 
 });
 
@@ -24,7 +24,7 @@ export const MainPage: FC = (): ReactElement => {
   const toast = useRef<Toast>(null);
 
   const center: [number, number] = useMemo(() => ([125.12217564443125, 1.4406812288395177]), []);
-  const zoom: [number] = useMemo(() => ([13]), []);
+  const zoom: [number] = useMemo(() => ([10]), []);
 
   // const getSnapshots = useCallback(() => {
   //   Connection.get('/apis/snapshots').then((resp: AxiosResponse) => {
