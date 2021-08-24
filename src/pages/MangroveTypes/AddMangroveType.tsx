@@ -34,17 +34,16 @@ const AddMangroveType: FC<props> = ({ onSubmit, type, onClose }): ReactElement =
   }, [onSubmit]);
 
   useEffect(() => {
-    type && toggleDialog(true);
+    typeof type !== 'undefined' && toggleDialog(true);
   }, [type]);
-
-  useEffect(() => {
-    !dialog && onClose()
-  }, [dialog, onClose])
 
   return (
     <>
       <Button onClick={() => toggleDialog(true)} label="Tambah Tipe Mangrove" icon="pi pi-plus" />
-      <Dialog draggable={false} style={{ width: '50vw' }} header={type ? `Edit ${type.name}` : <>Tambah Tipe</>} visible={dialog} footer={<></>} onHide={() => toggleDialog(false)}>
+      <Dialog draggable={false} style={{ width: '50vw' }} header={type ? `Edit ${type.name}` : <>Tambah Tipe</>} visible={dialog} footer={<></>} onHide={() => {
+        toggleDialog(false);
+        onClose();
+      }}>
         <Formik initialValues={{ name: type?.name ?? '' }} key={type?.id ?? 'testing'} validationSchema={validationSchema} onSubmit={onFinish}>
           {({ handleSubmit, values, touched, handleBlur, handleChange, errors }) => (
             <form onSubmit={handleSubmit} className="p-d-block">

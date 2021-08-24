@@ -63,7 +63,10 @@ const MangroveType: FC = (): ReactElement => {
   return (
     <div className="p-p-2 p-py-3">
       <Toast ref={toast} />
-      <AddMangroveType type={type} onClose={() => setType(undefined)} onSubmit={type ? updateType : createType} />
+      <AddMangroveType type={type} onClose={() => {
+        setType(undefined);
+        console.log('test')
+        }} onSubmit={type ? updateType : createType} />
       <MangroveList onEdit={setType} types={types} onDelete={deleteType} />
     </div>
   )

@@ -40,11 +40,16 @@ export const SearchButton: FC = (): ReactElement => {
   useEffect(() => {
     if (typeof selectedType !== 'undefined' && typeof map !== 'undefined') {
       const coordinates: [number, number][] = selectedType.points.map((point: Point) => ([point.longitude, point.latitude]));
-      if (coordinates.length > 0) {
+      if (coordinates.length > 1) {
         const line = lineString(coordinates);
         const boundingBox = bbox(line);
         // @ts-ignore
         map.fitBounds(boundingBox, { padding: 100, zoom: 12.5 });
+      } else if (coordinates.length === 1) {
+        map.flyTo({
+          // @ts-ignore
+          center: coordinates[0],
+        })
       }
     }
   }, [selectedType, map]);

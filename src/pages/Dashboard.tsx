@@ -63,13 +63,14 @@ export const Dashboard: FC = (): ReactElement => {
               <div className="p-col-11">
                 <h5>{user.name}</h5>
               </div>
-              <div className="p-col">                
+              <div className="p-col">
                 <Button onClick={() => push('/')} icon={`pi pi-map`} className="p-button-primary p-button-sm p-button-rounded p-mr-3" />
                 <Button onClick={logout} icon={`pi ${loading ? 'pi-spin pi-spinner' : 'pi-fw pi-sign-out'}`} className="p-button-danger p-button-sm p-button-rounded" />
               </div>
             </div>
           }
-          className={user.type === 'Administrator' ? "h-100 overflow-hidden" : ''}
+          style={{ overflow: 'auto' }}
+          className={user.type === 'Administrator' ? "h-100" : ''}
         >
           {
             user.type === 'Administrator' &&
