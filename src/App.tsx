@@ -16,6 +16,8 @@ import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeflex/primeflex.css'
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const MapDashboard = lazy(() => import('./pages/MapDashboard').then(m => ({ default: m.MapDashboard })));

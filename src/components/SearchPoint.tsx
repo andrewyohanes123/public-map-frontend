@@ -25,7 +25,7 @@ export const SearchPoint: FC<PointsByTypeProps> = ({ query, onBack }): ReactElem
   const getPoints = useCallback(() => {
     toggleLoading(true);
     Point.collection({
-      attributes: ['name', 'longitude', 'latitude', 'type_id', 'id'],
+      attributes: ['name', 'geometry', 'type_id', 'id'],
       where: {
         name: {
           $iLike: `%${query}%`

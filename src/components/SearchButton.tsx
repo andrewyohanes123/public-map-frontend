@@ -1,5 +1,5 @@
 import { FC, ReactElement, useContext, useState, useEffect, useCallback } from 'react'
-import { bbox, lineString } from '@turf/turf'
+import { bbox } from '@turf/turf'
 import { District, Point } from '../types/Types'
 import { ModelsContext } from '../contexts/ModelsContext';
 import { Button } from 'primereact/button';
@@ -16,7 +16,7 @@ export const SearchButton: FC = (): ReactElement => {
   const [query, setQuery] = useState<string>('');
   const { map } = useContext(MapInstance)
   const { models } = useContext(ModelsContext);
-  const { sidebar } = useContext(SelectedPoint);
+  const { sidebar, point_id } = useContext(SelectedPoint);
   const { District } = models!;
 
   const getTypes = useCallback(() => {
@@ -24,7 +24,7 @@ export const SearchButton: FC = (): ReactElement => {
       attributes: ['name'],
       include: [{
         model: 'Point',
-        attributes: ['latitude', 'longitude']
+        attributes: ['geometry']
       }]
     }).then(resp => {
       setTypes(resp.rows as District[]);
@@ -39,20 +39,42 @@ export const SearchButton: FC = (): ReactElement => {
 
   useEffect(() => {
     if (typeof selectedType !== 'undefined' && typeof map !== 'undefined') {
-      const coordinates: [number, number][] = selectedType.points.map((point: Point) => ([point.longitude, point.latitude]));
-      if (coordinates.length > 1) {
-        const line = lineString(coordinates);
-        const boundingBox = bbox(line);
+      // const coordinates: [number, number][] = selectedType.points.map((point: Point) => (point.geometry.coordinates[0]));
+      if (selectedType.points.length > 1) {
+        // const line = lineString();
+        const boundingBox = bbox({
+          type: 'FeatureCollection',
+          features: selectedType.points.map((point: Point) => ({
+            geometry: point.geometry,
+            type: 'Feature',
+            properties: {}
+          }))
+        });
+        console.log(boundingBox)
         // @ts-ignore
-        map.fitBounds(boundingBox, { padding: 100, zoom: 12.5 });
-      } else if (coordinates.length === 1) {
-        map.flyTo({
-          // @ts-ignore
-          center: coordinates[0],
-        })
+        map.fitBounds(boundingBox, { padding: 100, zoom: 11 });
       }
     }
   }, [selectedType, map]);
+
+  useEffect(() => {
+    if (typeof selectedType !== 'undefined') {
+      if (point_id === 0) {
+        console.log('point zero')
+        const boundingBox = bbox({
+          type: 'FeatureCollection',
+          features: selectedType.points.map((point: Point) => ({
+            geometry: point.geometry,
+            type: 'Feature',
+            properties: {}
+          }))
+        });
+        console.log(boundingBox)
+        // @ts-ignore
+        map?.fitBounds(boundingBox, { padding: 100, zoom: 11 });
+      }
+    }
+  }, [point_id, selectedType, map])
 
   useEffect(() => {
     toggleShowType(!sidebar && typeof selectedType === 'undefined');
@@ -91,7 +113,8 @@ export const SearchButton: FC = (): ReactElement => {
       <PointSidebar />
       {(typeof selectedType !== 'undefined' && !sidebar) && <PointsByType district_id={selectedType.id} district={selectedType} onBack={() => {
         setSelectedType(undefined);
-        toggleShowType(query.length === 0)
+        toggleShowType(query.length === 0);
+        // setPointId(0)
       }} />}
       {(query.length > 0 && !sidebar) && <SearchPoint query={query} onBack={() => {
         toggleShowType(true)

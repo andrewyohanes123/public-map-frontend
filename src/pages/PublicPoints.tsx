@@ -22,7 +22,7 @@ export const PublicPoints: FC = (): ReactElement => {
 
   const getPoints = useCallback(() => {
     Point.collection({
-      attributes: ['name', 'longitude', 'latitude', 'description', 'type_id'],
+      attributes: ['name', 'pointType', 'properties', 'geometry', 'description', 'type_id'],
       include: [
         { model: 'Type', attributes: ['name', 'color', 'icon'] }
       ]
@@ -115,10 +115,7 @@ export const PublicPoints: FC = (): ReactElement => {
             type: 'FeatureCollection',
             features: points.rows.map((point: Point) => ({
               type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [point.longitude, point.latitude],
-              },
+              geometry: point.geometry,
               properties: {
                 name: point.name,
                 icon: `icon-image${point.type_id}`,
@@ -130,17 +127,13 @@ export const PublicPoints: FC = (): ReactElement => {
 
         map.addLayer({
           'id': 'points',
-          type: 'symbol',
+          type: 'fill',
           source: 'points',
           layout: {
-            'icon-image': ['get', 'icon'],
-            'icon-size': 0.30,
-            'icon-offset': [0, 25],
-            'icon-anchor': 'bottom'
-            // 'text-field': ['get', 'title'],
-            // 'text-offset': [0, 1.25],
-            // 'text-anchor': 'bottom',
-            // 'text-font': ['Arial']
+          },
+          paint: {
+            'fill-color': 'rgba(0, 184, 148, 0.6)',
+            'fill-outline-color': 'rgba(0, 184, 148, 0.5)'
           }
         });
 

@@ -1,3 +1,4 @@
+import { bbox } from '@turf/turf';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { FC, ReactElement, useState, useCallback, useContext, useEffect } from 'react'
@@ -27,7 +28,7 @@ export const PointsByType: FC<PointsByTypeProps> = ({ district_id, district, onB
     if (typeof district_id !== 'undefined') {
       toggleLoading(true);
       Point.collection({
-        attributes: ['name', 'longitude', 'latitude', 'district_id', 'id'],
+        attributes: ['name', 'geometry', 'district_id', 'id'],
         where: {
           district_id
         },
@@ -46,11 +47,18 @@ export const PointsByType: FC<PointsByTypeProps> = ({ district_id, district, onB
 
   const focusPoint = useCallback((point: Point) => {
     if (typeof map !== 'undefined') {
-      map.flyTo({
-        center: [point.longitude, point.latitude],
-      })
+      const boundingBox = bbox({
+        type: 'FeatureCollection',
+        features: [{
+          geometry: point.geometry,
+          type: 'Feature',
+          properties: {}
+        }]
+      });
+      // @ts-ignore
+      map.fitBounds(boundingBox, {padding: 24})
       toggleSidebar(true);
-      setPointId(point.id)
+      setPointId(point.id);
     }
   }, [map, setPointId, toggleSidebar]);
 

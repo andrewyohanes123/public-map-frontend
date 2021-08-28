@@ -46,7 +46,8 @@ export const PointSidebar: FC = (): ReactElement => {
           :
           <div className="p-p-3">
             <Button icon="pi pi-times" onClick={() => {
-              toggleSidebar(false)
+              toggleSidebar(false);
+              // setPointId(0);
             }} className="p-mb-3 p-button-danger p-button-outlined p-button-sm p-button-rounded" />
             <h3>{point?.name}</h3>
             <p style={{ color: 'var(--text-color-secondary)' }} className="p-mb-3">{point?.type.name}</p>

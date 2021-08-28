@@ -12,8 +12,6 @@ export interface Picture extends ModelInstance {
 
 export interface Point extends ModelInstance {
 	name: string;
-  longitude: number;
-  latitude: number;
   type_id?: number;
   user_id?: number;
   description?: string;

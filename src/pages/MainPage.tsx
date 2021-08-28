@@ -1,5 +1,6 @@
-import { FC, ReactElement, useContext, useRef, useMemo } from 'react'
+import { FC, ReactElement, useContext, useRef, useMemo, useCallback } from 'react'
 import { Toast } from 'primereact/toast'
+import mapboxgl from 'mapbox-gl'
 import Mapbox, { ZoomControl, ScaleControl } from 'react-mapbox-gl'
 import { useLocation } from 'react-router-dom'
 import { MapInstance } from '../contexts/MapInstanceContext';
@@ -11,8 +12,7 @@ export const Map = Mapbox({
   accessToken: 'pk.eyJ1IjoiYW5kcmV3eW9oYW5lcyIsImEiOiJjamxsc2c3MnQweHRuM2tsMXowNXR5ZTQ5In0.H6o00Jv2W2pfGbiY7BK7Yw',
   attributionControl: false,
   logoPosition: 'bottom-left',
-  minZoom: 7,
-
+  minZoom: 9  
 });
 
 // const { REACT_APP_MAP_URL, REACT_APP_MAP_STYLE }: NodeJS.ProcessEnv = process.env;
@@ -26,68 +26,10 @@ export const MainPage: FC = (): ReactElement => {
   const center: [number, number] = useMemo(() => ([125.12217564443125, 1.4406812288395177]), []);
   const zoom: [number] = useMemo(() => ([10]), []);
 
-  // const getSnapshots = useCallback(() => {
-  //   Connection.get('/apis/snapshots').then((resp: AxiosResponse) => {
-  //     setSnapshots(resp.data.data.rows);
-  //   }).catch(e => {
-  //     toast.current?.show({ severity: 'error', summary: 'Terjadi kesalahan', detail: e.toString(), life: 1500 });
-  //   })
-  // }, []);
-
-  // useEffect(() => {
-  //   getSnapshots();
-  // }, [getSnapshots]);
-
-  // useEffect(() => {
-  //   if (typeof map !== 'undefined') {
-  //     snapshots.forEach((snapshot) => {
-  //       // const currentLayer = map.getLayer(`layer_${snapshot.name}`);
-  //       // const currentSource = map.getSource(`source_${snapshot.name}`);
-  //       // const type = typeConverter(snapshot.type)
-  //       // if (typeof currentLayer === 'undefined' && typeof currentSource === 'undefined' && (snapshot.name === 'Bangunan')) {
-  //       //   map.addSource(`source_${snapshot.name}`, {
-  //       //     'type': 'vector', 'tiles': [`${REACT_APP_MAP_URL}/map/snapshots/${snapshot.id}/shapes/?z={z}&x={x}&y={y}&layerName=${snapshot.name}`]
-  //       //   })
-  //       //   map.addLayer(type === 'fill-extrusion' ? {
-  //       //     'id': `layer_${snapshot.name}`,
-  //       //     'type': type,
-  //       //     'source-layer': `source_${snapshot.name}`,
-  //       //     source: `source_${snapshot.name}`,
-  //       //     'paint': {
-  //       //       'fill-extrusion-color': '#bbb',
-  //       //       'fill-extrusion-opacity': snapshot.opacity,
-  //       //       'fill-extrusion-height': [
-  //       //         'interpolate',
-  //       //         ['linear'],
-  //       //         ['zoom'],
-  //       //         15,
-  //       //         0,
-  //       //         15.05,
-  //       //         ['get', 'height']
-  //       //       ]
-  //       //     },
-  //       //     minzoom: 12.5,
-  //       //     layout: {
-  //       //       visibility: 'none'
-  //       //     }
-  //       //   } : {
-  //       //     'id': `layer_${snapshot.name}`,
-  //       //     'type': type,
-  //       //     'source-layer': `source_${snapshot.name}`,
-  //       //     source: `source_${snapshot.name}`,
-  //       //     'paint': {
-  //       //       'line-color': `${snapshot.color}`,
-  //       //       "line-opacity": snapshot.opacity,
-  //       //     },
-  //       //     minzoom: 13,
-  //       //     layout: {
-  //       //       visibility: 'none'
-  //       //     }
-  //       //   });
-  //       // }
-  //     })
-  //   }
-  // }, [map, snapshots])
+  const initMap = useCallback((map: mapboxgl.Map, ev) => {
+    console.log({map, ev})
+    setMap!(map);
+  }, [setMap]);
 
   return (
     <>
@@ -96,38 +38,6 @@ export const MainPage: FC = (): ReactElement => {
         //eslint-disable-next-line 
         style={
           'mapbox://styles/mapbox/satellite-v9'
-          // `${REACT_APP_MAP_URL}/map/maps/${REACT_APP_MAP_STYLE}?port=443&secured=true`
-          // {
-          //   sources: {
-          //     land: {
-          //       type: 'geojson',
-          //       data: `${REACT_APP_IP_ADDRESS}:${REACT_APP_PORT}/map/base`,         
-          //     }
-          //   },
-          //   layers: [
-          //     {
-          //       id: 'ocean',
-          //       type: 'background',
-          //       paint: {
-          //         'background-color': '#00ffff'
-          //       }
-          //     },
-          //     {
-          //       id: 'land',
-          //       type: 'fill',
-          //       source: 'land',
-          //       // 'source-layer': 'land',        
-          //       paint: {
-          //         'fill-color': '#ffffff'
-          //       },
-          //       layout: {
-          //         visibility: 'visible'
-          //       }
-          //     },
-          //   ],
-          //   name: 'empty',
-          //   version: 8,
-          // }
         }
         containerStyle={{
           height: '100%',
@@ -135,7 +45,7 @@ export const MainPage: FC = (): ReactElement => {
         }}
         zoom={zoom}
         center={center}
-        onStyleLoad={(map) => setMap!(map)}
+        onStyleLoad={initMap}
       >
         <ZoomControl position="bottom-right" />
         <ScaleControl position="bottom-left" />

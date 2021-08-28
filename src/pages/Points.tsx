@@ -25,7 +25,7 @@ export const Points: FC = (): ReactElement => {
   const getPoints = useCallback(() => {
     toggleLoading(true);
     Point.collection({
-      attributes: ['name', 'latitude', 'longitude', 'description', 'id'],
+      attributes: ['name', 'pointType', 'geometry', 'properties', 'description', 'id'],
       include: [{
         model: 'Type',
         attributes: ['name', 'icon', 'color']

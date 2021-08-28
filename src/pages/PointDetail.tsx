@@ -9,6 +9,7 @@ import Dropzone from 'react-dropzone'
 import { UserPoints } from '../components/UserPoints';
 import { ImagePreviewCard } from '../components/ImagePreviewCard';
 import AddMangroveAmount from '../components/AddMangroveAmount';
+import { lineString, bbox } from '@turf/turf';
 
 const { REACT_APP_IP_ADDRESS, REACT_APP_PORT }: NodeJS.ProcessEnv = process.env;
 export const PointDetail: FC = (): ReactElement => {
@@ -29,10 +30,10 @@ export const PointDetail: FC = (): ReactElement => {
     if (map) {
       PointSingle.single(parseInt(id)).then(resp => {
         setPoint(resp as Point);
-        map.flyTo({
-          center: [resp.longitude, resp.latitude],
-          zoom: 14
-        })
+        const line_string = lineString(resp.geometry.coordinates[0]);
+        const boundingBox = bbox(line_string);
+        // @ts-ignore
+        map?.fitBounds(boundingBox); 
       }).catch(e => {
         toast.current?.show({ severity: 'error', summary: 'Terjadi Kesalahan', detail: e.toString() });
       });
