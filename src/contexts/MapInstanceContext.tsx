@@ -3,12 +3,12 @@ import { Map } from 'mapbox-gl'
 
 export interface mapInstanceReducerArgs {
   type: 'SET_MAP',
-  payload: Map
+  payload?: Map
 }
 
 export interface mapInstanceReducerValues {
   map?: Map;
-  setMap?: (map: Map) => void;
+  setMap?: (map?: Map) => void;
 }
 
 export const MapInstance = createContext<mapInstanceReducerValues>({});
@@ -16,7 +16,7 @@ export const MapInstance = createContext<mapInstanceReducerValues>({});
 export const MapInstanceProvider: FC = ({ children }): ReactElement => {
   const [state, dispatch] = useReducer(mapInstanceReducer, { map: undefined, setMap: undefined });
 
-  const setMap = (map: Map): void => {
+  const setMap = (map?: Map): void => {
     dispatch({
       type: 'SET_MAP',
       payload: map

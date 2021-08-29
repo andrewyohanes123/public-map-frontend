@@ -1,4 +1,4 @@
-import { FC, ReactElement, useContext, useRef, useMemo, useCallback } from 'react'
+import { FC, ReactElement, useContext, useRef, useMemo, useCallback, useEffect } from 'react'
 import { Toast } from 'primereact/toast'
 import mapboxgl from 'mapbox-gl'
 import Mapbox, { ZoomControl, ScaleControl } from 'react-mapbox-gl'
@@ -20,7 +20,7 @@ export const Map = Mapbox({
 
 export const MainPage: FC = (): ReactElement => {
   const { pathname } = useLocation();
-  const { setMap } = useContext(MapInstance);
+  const { setMap, map } = useContext(MapInstance);
   const toast = useRef<Toast>(null);
 
   const center: [number, number] = useMemo(() => ([125.12217564443125, 1.4406812288395177]), []);
@@ -30,6 +30,14 @@ export const MainPage: FC = (): ReactElement => {
     console.log({map, ev})
     setMap!(map);
   }, [setMap]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof map !== 'undefined') {
+        setMap!(undefined);
+      }
+    }
+  }, [map, setMap])
 
   return (
     <>
