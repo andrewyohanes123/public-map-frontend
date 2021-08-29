@@ -2,9 +2,15 @@
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+// @ts-ignore
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import reportWebVitals from './reportWebVitals';
 import { GlobalModelsProvider } from './contexts/ModelsContext';
 import { UserProvider } from './contexts/UserContext';
+
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 ReactDOM.render(
   // <React.StrictMode>
