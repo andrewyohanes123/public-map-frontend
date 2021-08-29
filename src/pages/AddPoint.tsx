@@ -141,9 +141,11 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
 
   useEffect(() => {
     if (typeof map !== 'undefined') {
-      map.addControl(draw, 'top-left');
+      console.log(map)
+      if (!map.hasControl(draw)) {
+        map.addControl(draw, 'top-left');
+      }
       if (typeof point !== 'undefined') {
-        // console.log({coords: point.geometry.coordinates})
         const line_string = lineString(point.geometry.coordinates[0]);
         const boundingBox = bbox(line_string);
         // @ts-ignore
@@ -154,17 +156,8 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
         map.flyTo({
           center: [map.getCenter().lng, map.getCenter().lat]
         })
-        // setCoords([map.getCenter().lng, map.getCenter().lat]);
-        // marker.setLngLat(map.getCenter()).addTo(map)
       }
-      // marker.on('dragend', () => {
-      //   const coords = marker.getLngLat();
-      //   setCoords([coords.lng, coords.lat]);
-      //   map.flyTo({
-      //     center: [coords.lng, coords.lat],
-      //     zoom: 13
-      //   })
-      // })
+
       map.on('draw.create', (e: any) => {
         console.log(e);
         setCoords(e.features[0].geometry.coordinates);
@@ -173,6 +166,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
         const surface = data.features.length > 0 ? area(data) : 0;
         setSurfaceArea(Math.round(Math.round(surface * 100) / 100) / 10000);
       });
+
       map.on('draw.update', (e: any) => {
         console.log(e);
         setCoords(e.features[0].geometry.coordinates);
@@ -180,17 +174,14 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
         const surface = data.features.length > 0 ? area(data) : 0;
         console.log({ data, surface })
         setSurfaceArea(Math.round(Math.round(surface * 100) / 100) / 10000);
-        // setCoords(e[0].geometry.coordinates);
       })
     }
     return () => {
       if (typeof map !== 'undefined') {
         if (map.hasControl(draw)) {
           map.removeControl(draw);
-          //   console.log('remove draw')
         }
       }
-      // marker.remove()
     }
   }, [map, point]);
 
