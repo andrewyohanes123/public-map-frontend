@@ -5,7 +5,6 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import Primereact from 'primereact/api'
 import moment from 'moment';
-import { MainPage } from './pages/MainPage';
 import { ModelsContext, ModelsContextAttributes } from './contexts/ModelsContext';
 import { UserContext, UserAttributes, UserContextAttributes } from './contexts/UserContext';
 import { MapInstanceProvider } from './contexts/MapInstanceContext';
@@ -17,6 +16,7 @@ import 'primereact/resources/primereact.min.css';
 import 'primeflex/primeflex.css'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import { PublicMap } from './pages/PublicMap';
 
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
@@ -113,7 +113,7 @@ const App: FC = (): ReactElement => {
           <SelectedPoint.Provider value={{ setPointId, toggleSidebar, point_id: pointId, sidebar: pointSidebar }}>
             <HashRouter>
               <Switch>
-                <Route exact path="/" component={MainPage} />
+                <Route exact path="/" component={PublicMap} />
                 <Route exact path="/login" component={Login} />
                 <Suspense fallback={<></>}>
                   <Route path="/dashboard" component={

@@ -1,11 +1,16 @@
-import {FC, ReactElement} from 'react'
+import { FC, ReactElement } from 'react'
+import { SearchButton } from '../components/SearchButton'
+import { UserBadge } from '../components/UserBadge'
 import { MainPage } from './MainPage'
+import { PublicPoints } from './PublicPoints'
 
 export const PublicMap: FC = (): ReactElement => {
   return (
     <>
-      <PublicMap />
       <MainPage />
+      <SearchButton />
+      <PublicPoints />
+      <UserBadge />
     </>
   )
 }

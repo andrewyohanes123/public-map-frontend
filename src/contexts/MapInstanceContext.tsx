@@ -1,4 +1,4 @@
-import { createContext, useReducer, FC, ReactElement } from 'react'
+import { createContext, useReducer, FC, ReactElement, useCallback } from 'react'
 import { Map } from 'mapbox-gl'
 
 export interface mapInstanceReducerArgs {
@@ -16,12 +16,12 @@ export const MapInstance = createContext<mapInstanceReducerValues>({});
 export const MapInstanceProvider: FC = ({ children }): ReactElement => {
   const [state, dispatch] = useReducer(mapInstanceReducer, { map: undefined, setMap: undefined });
 
-  const setMap = (map?: Map): void => {
+  const setMap = useCallback((map?: Map): void => {
     dispatch({
       type: 'SET_MAP',
       payload: map
     })
-  }
+  }, [])
 
   return (
     <MapInstance.Provider value={{...state, setMap}}>
