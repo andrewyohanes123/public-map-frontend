@@ -17,6 +17,7 @@ import 'primeflex/primeflex.css'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import { PublicMap } from './pages/PublicMap';
+import Register from './pages/Register';
 
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
@@ -115,6 +116,7 @@ const App: FC = (): ReactElement => {
               <Switch>
                 <Route exact path="/" component={PublicMap} />
                 <Route exact path="/login" component={Login} />
+                <Route exact path="/register" component={Register} />
                 <Suspense fallback={<></>}>
                   <Route path="/dashboard" component={
                     user?.type === 'Administrator' ?

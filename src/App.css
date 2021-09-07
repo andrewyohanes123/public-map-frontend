@@ -42,7 +42,7 @@ p {
 }
 
 .search-container {
-  width: 400px;
+  max-width: 400px;
   position: fixed;
   z-index: 1000;
   top: 15px;
@@ -52,6 +52,14 @@ p {
   overflow: auto;
   scrollbar-width: none;
   border-radius: 8px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .search-container {
+    min-width: calc(100% - 30px);
+    /* max-width: 1000px; */
+    top: 75px;
+  }
 }
 
 .search-container::-webkit-scrollbar {
