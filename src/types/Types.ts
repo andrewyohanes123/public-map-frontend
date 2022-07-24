@@ -1,4 +1,5 @@
 import ModelInstance from "@edgarjeremy/sirius.adapter/dist/libs/ModelInstance";
+import { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 
 export interface Picture extends ModelInstance {
 	description?: string;
@@ -25,6 +26,7 @@ export interface Point extends ModelInstance {
 	name: string;
   created_at?: Date;
   updated_at?: Date;
+  geometry: FeatureCollection<Geometry, GeoJsonProperties>;
 }
 
 export interface Type extends ModelInstance {

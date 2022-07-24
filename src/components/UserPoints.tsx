@@ -84,17 +84,8 @@ export const UserPoints: FC = (): ReactElement => {
 
       map.addSource('points', {
         type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: points.rows.map((point: Point) => ({
-            type: point.pointType,
-            geometry: point.geometry,
-            properties: {
-              title: point.name,
-              // icon: `icon-image${point.type_id}`
-            }
-          }))
-        }
+        // @ts-ignore
+        data: points.rows.map(point => point.geometry)
       });
 
       map.addLayer({
