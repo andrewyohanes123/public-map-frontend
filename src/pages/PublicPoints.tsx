@@ -154,15 +154,18 @@ export const PublicPoints: FC = (): ReactElement => {
         typeof currentLayer === "undefined" &&
         typeof currentSource === "undefined"
       ) {
+        const sourcePoints = points.rows.map((point) =>
+          point.geometry.features.map((feature) => ({
+            ...feature,
+            properties: { ...feature.properties, id: point.id },
+          }))
+        );
         map.addSource("points", {
           type: "geojson",
           // @ts-ignore
           data: {
             type: "FeatureCollection",
-            // @ts-ignore
-            features: points.rows.map((point) =>
-              point.geometry.features.map((feature) => feature).flat()
-            ),
+            features: sourcePoints.flat(),
           },
         });
 
@@ -170,14 +173,38 @@ export const PublicPoints: FC = (): ReactElement => {
           id: "points",
           type: "fill",
           source: "points",
-          layout: {},
+          layout: {
+            "fill-sort-key": ["number", ["get", "damage_percentage"]],
+          },
           paint: {
-            "fill-color": "rgba(0, 184, 148, 0.6)",
-            "fill-outline-color": "rgba(0, 184, 148, 0.5)",
+            "fill-color": [
+              "interpolate",
+              ["linear"],
+              ["number", ["get", "damage_percentage"]],
+              0,
+              ["rgba", 29, 209, 161, 0.25],
+              50,
+              ["rgba", 249, 202, 36, 0.25],
+              100,
+              ["rgba", 235, 77, 75, 0.25],
+            ],
+            // ["rgba", ["get", "damage_percentage"], 0, ["-", 100, ["get", "damage_percentage"]]],
+            "fill-outline-color": [
+              "interpolate",
+              ["linear"],
+              ["number", ["get", "damage_percentage"]],
+              0,
+              ["rgba", 29, 209, 161, 0.35],
+              50,
+              ["rgba", 249, 202, 36, 0.35],
+              100,
+              ["rgba", 235, 77, 75, 0.35],
+            ],
           },
         });
 
-        map.on("mouseenter", "points", () => {
+        map.on("mouseenter", "points", (e) => {
+          console.log(e.features);
           map.getCanvas().style.cursor = "pointer";
         });
 
@@ -189,8 +216,10 @@ export const PublicPoints: FC = (): ReactElement => {
         map.on("click", "points", (e) => {
           // @ts-ignore
           setPointId(e.features![0].properties.id);
+          console.log({e})
           map.flyTo({
             center: e.lngLat,
+            zoom: 12
           });
           toggleSidebar(true);
         });
