@@ -11,7 +11,7 @@ import { Button } from "primereact/button";
 import { Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { area, lineString, bbox, polygon } from "@turf/turf";
+import { area, bbox, polygon } from "@turf/turf";
 import { FormInput } from "../components/FormInput";
 import { ModelsContext } from "../contexts/ModelsContext";
 import { useHistory, useParams } from "react-router";
@@ -162,6 +162,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
           console.log(resp);
         })
         .catch((e) => {
+          console.log(e)
           toast.current?.show({
             severity: "error",
             summary: "Terjadi Kesalahan",
@@ -179,6 +180,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
         setTypes(resp.rows as Type[]);
       })
       .catch((e) => {
+        console.log(e)
         toast.current?.show({
           severity: "error",
           summary: "Terjadi Kesalahan",
@@ -235,10 +237,10 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
       }
       if (typeof point !== "undefined") {
         // @ts-ignore
-        const line_string = lineString(point.geometry.features[0].coordinates);
-        const boundingBox = bbox(line_string);
+        // const line_string = lineString(point.geometry.features[0].coordinates);
+        const boundingBox = bbox(point.geometry);
         // @ts-ignore
-        map?.fitBounds(boundingBox);
+        map?.fitBounds(boundingBox, {padding: 30});
         draw.add(point.geometry);
         // marker.setLngLat([point.longitude, point.latitude]).addTo(map)
       } else {
