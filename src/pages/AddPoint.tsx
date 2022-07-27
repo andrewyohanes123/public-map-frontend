@@ -509,6 +509,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
                     typeof id !== "undefined" ? `pi-save` : "pi-plus"
                   }`}
                   className="p-button-success p-button-sm p-fluid"
+                  type="submit"
                 />
               </div>
             </form>
