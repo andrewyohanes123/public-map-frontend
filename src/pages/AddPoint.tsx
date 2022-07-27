@@ -66,7 +66,6 @@ const draw = new MapboxDraw({
 
 export const AddPoint: FC<AddPointProps> = (): ReactElement => {
   const [loading, toggleLoading] = useState<boolean>(false);
-  const [coords, setCoords] = useState<[number, number][]>([[3, 3]]);
   const [point, setPoint] = useState<Point | undefined>(undefined);
   const [surfaceArea, setSurfaceArea] = useState<number>(0);
   const [types, setTypes] = useState<Type[]>([]);
@@ -127,10 +126,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
         point
           .update({
             ...val,
-            geometry: {
-              type: "Polygon",
-              coordinates: coords,
-            },
+            geometry: draw.getAll(),
             surface_area: surfaceArea,
           })
           .then((resp) => {
@@ -150,7 +146,7 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
           });
       }
     },
-    [point, coords, push, surfaceArea]
+    [point, push, surfaceArea]
   );
 
   const getPoint = useCallback(() => {
@@ -266,7 +262,6 @@ export const AddPoint: FC<AddPointProps> = (): ReactElement => {
       });
 
       map.on("draw.update", (e: any) => {
-        setCoords(e.features[0].geometry.coordinates);
         const data = draw.getAll();
         const firstLayerArea = polygon(
           data.features
