@@ -22,12 +22,12 @@ const FeatureBox: FC<props> = ({
   name,
   isFirst = false,
   coordinates,
-  totalArea
+  totalArea,
 }): ReactElement => {
   const areaOfDamage = useMemo(() => {
     // @ts-ignore
     const polygonArea = polygon(coordinates.coordinates);
-    console.log(coordinates, polygonArea)
+    console.log(coordinates, polygonArea);
     const surface = area(polygonArea);
     return Math.round(Math.round(surface * 100) / 100) / 10000;
   }, [coordinates]);
@@ -38,9 +38,15 @@ const FeatureBox: FC<props> = ({
 
   return (
     <Box p="md" my="xs" sx={sx}>
-      <Text weight={700}>{name}</Text>
-      <Text>Luar Area: {areaOfDamage} Ha</Text>
-      <Text>Jumlah Kerusakan {damagedAreaPercentage.toFixed(2)}%</Text>
+      <Text sx={(theme) => ({ color: theme.white })} weight={700}>
+        {name}
+      </Text>
+      <Text sx={(theme) => ({ color: theme.white })}>
+        Luar Area: {areaOfDamage} Ha
+      </Text>
+      <Text sx={(theme) => ({ color: theme.white })}>
+        Jumlah Kerusakan {damagedAreaPercentage.toFixed(2)}%
+      </Text>
       {/* {!isFirst && <NumberInput min={0} placeholder="Jumlah kerusakan" />} */}
     </Box>
   );

@@ -261,7 +261,7 @@ export const PointDetail: FC = (): ReactElement => {
       )}
       <AddMangroveAmount preview={false} surface_area={point.surface_area} />
       <div className="p-p-3">
-      {point?.geometry.features.map((feature) => (
+      {point?.geometry.features.filter((f, idx) => idx > 0).map((feature) => (
         <FeatureBox
           coordinates={feature.geometry}
           name="Area Kerusakan"
